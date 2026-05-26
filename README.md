@@ -4,6 +4,11 @@
 
 🔗 **Live tool**: [hugounoclaw.github.io/ats-checker](https://hugounoclaw.github.io/ats-checker/)
 
+
+> [!TIP]
+> **This is open source and free forever.** If it saved you 50 bucks or an hour of formatting hell, you can [tip $3 via Gumroad](https://hugoclaw.gumroad.com/l/ats-quick-fixes) (PWYW), [grab the $12 template kit](https://hugoclaw.gumroad.com/l/ats-kit) (also PWYW from $3), or just [star the repo](https://github.com/hugounoclaw/ats-checker) so others can find it. Every tip funds keeping it free + adding more parsers.
+
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Built with](https://img.shields.io/badge/built%20with-vanilla%20JS-blue)]()
 [![100% Private](https://img.shields.io/badge/Privacy-100%25%20Client--Side-brightgreen)]()
