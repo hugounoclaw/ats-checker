@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free ATS Resume Checker — Instant Score &amp; Fixes (2026)</title>
+<meta name="description" content="Free ATS resume checker. Paste your resume or upload a PDF and get an instant ATS compatibility score, keyword match against any job description, and prioritized fixes. 100% private — your resume never leaves your browser.">
+<link rel="canonical" href="https://hugounoclaw.github.io/ats-checker/">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#1f6feb">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Free ATS Resume Checker — Instant Score &amp; Fixes">
+<meta property="og:description" content="Get an instant ATS compatibility score and prioritized fixes. 100% private, runs entirely in your browser.">
+<meta property="og:url" content="https://hugounoclaw.github.io/ats-checker/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Free ATS Resume Checker — Instant Score">
+<meta name="twitter:description" content="Instant ATS score + fixes. 100% private, runs in your browser.">
+
+<!-- JSON-LD: WebApplication -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Free ATS Resume Checker",
+  "url": "https://hugounoclaw.github.io/ats-checker/",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Any (web browser)",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "description": "Instant ATS compatibility score, job-description keyword match, and prioritized resume fixes. Runs entirely client-side; your resume never leaves your browser."
+}
+</script>
+<!-- JSON-LD: FAQ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"What is an ATS resume score?","acceptedAnswer":{"@type":"Answer","text":"An ATS (Applicant Tracking System) score estimates how well an automated resume scanner can parse your resume and match it to a job. Aim for 70+; 80+ is excellent."}},
+    {"@type":"Question","name":"Is this ATS checker free?","acceptedAnswer":{"@type":"Answer","text":"Yes. The checker is completely free and runs in your browser. Your resume is never uploaded to any server."}},
+    {"@type":"Question","name":"Does my resume get uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. All analysis happens locally in your browser using JavaScript. Nothing is sent to a server, so your data stays private."}},
+    {"@type":"Question","name":"What file types are supported?","acceptedAnswer":{"@type":"Answer","text":"You can paste plain text or upload a text-based PDF. For best ATS compatibility when applying, submit a .docx file."}}
+  ]
+}
+</script>
+
+<style>
+:root{
+  --bg:#0d1117; --panel:#161b22; --panel2:#1c2230; --line:#2a313c;
+  --txt:#e6edf3; --muted:#9aa7b4; --accent:#1f6feb; --accent2:#388bfd;
+  --good:#2ea043; --warn:#d29922; --bad:#da3633; --radius:14px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg);color:var(--txt);line-height:1.6}
+.wrap{max-width:880px;margin:0 auto;padding:24px 18px 64px}
+header.hero{text-align:center;padding:30px 0 8px}
+h1{font-size:2rem;margin:.2em 0;line-height:1.2}
+.sub{color:var(--muted);font-size:1.06rem;max-width:620px;margin:0 auto}
+.badge{display:inline-block;background:rgba(46,160,67,.12);color:#4ac26b;border:1px solid rgba(46,160,67,.4);
+  font-size:.78rem;padding:3px 10px;border-radius:999px;margin-top:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-top:20px}
+.tabs{display:flex;gap:8px;margin-bottom:14px}
+.tab{flex:1;padding:10px;text-align:center;background:var(--panel2);border:1px solid var(--line);
+  border-radius:10px;cursor:pointer;color:var(--muted);font-weight:600;user-select:none}
+.tab.active{color:#fff;border-color:var(--accent);background:rgba(31,111,235,.15)}
+textarea{width:100%;min-height:200px;background:var(--bg);color:var(--txt);border:1px solid var(--line);
+  border-radius:10px;padding:12px;font-size:.95rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;resize:vertical}
+textarea#jd{min-height:120px}
+label.fld{display:block;font-weight:600;margin:14px 0 6px}
+.hint{color:var(--muted);font-size:.85rem;margin:4px 0 0}
+.drop{border:2px dashed var(--line);border-radius:10px;padding:34px 16px;text-align:center;color:var(--muted);cursor:pointer}
+.drop.drag{border-color:var(--accent);background:rgba(31,111,235,.08);color:var(--txt)}
+.btn{display:inline-block;background:var(--accent);color:#fff;border:none;padding:13px 22px;font-size:1rem;
+  font-weight:700;border-radius:10px;cursor:pointer;width:100%;margin-top:16px}
+.btn:hover{background:var(--accent2)}
+.btn.ghost{background:transparent;border:1px solid var(--accent);color:var(--accent2)}
+.hidden{display:none!important}
+/* results */
+.scorerow{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.ring{position:relative;width:128px;height:128px;flex:0 0 auto}
+.ring svg{transform:rotate(-90deg)}
+.ring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .num b{font-size:2.1rem;line-height:1}
+.ring .num span{font-size:.72rem;color:var(--muted)}
+.verdict{flex:1;min-width:220px}
+.verdict h2{margin:.1em 0}
+.bars{margin-top:6px}
+.bar{margin:10px 0}
+.bar .top{display:flex;justify-content:space-between;font-size:.9rem;margin-bottom:4px}
+.track{height:9px;background:var(--panel2);border-radius:6px;overflow:hidden}
+.fill{height:100%;border-radius:6px;background:var(--accent)}
+.suggest{margin-top:6px}
+.suggest li{margin:9px 0;padding-left:4px}
+.tag{display:inline-block;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:6px;margin-right:8px;vertical-align:middle}
+.tag.hi{background:rgba(218,54,51,.18);color:#ff6b66}
+.tag.me{background:rgba(210,153,34,.18);color:#e3b341}
+.tag.lo{background:rgba(46,160,67,.18);color:#4ac26b}
+.kwmatch{margin-top:8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{font-size:.78rem;padding:3px 9px;border-radius:999px;background:var(--panel2);border:1px solid var(--line)}
+.chip.miss{border-color:rgba(218,54,51,.5);color:#ff8480}
+/* CTA */
+.cta{background:linear-gradient(135deg,#13233f,#1b2b4a);border:1px solid #2c4673;border-radius:var(--radius);
+  padding:24px;margin-top:26px;text-align:center}
+.cta h3{margin:.2em 0;font-size:1.3rem}
+.cta p{color:#c9d6e5;max-width:560px;margin:8px auto 16px}
+.cta .price{font-size:.9rem;color:#9fd0ff;margin-bottom:14px}
+.cta ul{text-align:left;max-width:430px;margin:0 auto 18px;color:#dbe6f3}
+.cta a.btn{max-width:340px;margin:0 auto}
+section.info{margin-top:36px}
+section.info h2{font-size:1.35rem}
+details{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:10px 0}
+summary{cursor:pointer;font-weight:600}
+footer{margin-top:48px;text-align:center;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padding-top:22px}
+a{color:var(--accent2)}
+@media(max-width:560px){h1{font-size:1.6rem}.ring{width:104px;height:104px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>Free ATS Resume Checker</h1>
+  <p class="sub">Paste your resume or upload a PDF to get an instant <strong>ATS compatibility score</strong>, a keyword match against any job description, and a prioritized list of fixes.</p>
+  <div class="badge">🔒 100% private — your resume never leaves your browser</div>
+</header>
+
+<div class="card">
+  <div class="tabs">
+    <div class="tab active" id="tabPaste">Paste text</div>
+    <div class="tab" id="tabPdf">Upload PDF</div>
+  </div>
+
+  <div id="paneePaste">
+    <label class="fld" for="resume">Your resume</label>
+    <textarea id="resume" placeholder="Paste your full resume text here…"></textarea>
+  </div>
+
+  <div id="paneePdf" class="hidden">
+    <div class="drop" id="drop">
+      <strong>Drop a PDF here</strong> or click to choose<br>
+      <span class="hint">Text-based PDF only (not a scanned image). Parsed locally.</span>
+      <input type="file" id="file" accept="application/pdf" class="hidden">
+    </div>
+    <p class="hint" id="pdfStatus"></p>
+  </div>
+
+  <label class="fld" for="jd">Job description <span style="font-weight:400;color:var(--muted)">(optional — unlocks keyword match)</span></label>
+  <textarea id="jd" placeholder="Paste the job posting to see how many of its keywords your resume hits…"></textarea>
+
+  <button class="btn" id="run">Check my resume →</button>
+</div>
+
+<div class="card hidden" id="results"></div>
+
+<div class="cta" id="cta">
+  <div class="price">Free checker got you a number. This gets you the offer.</div>
+  <h3>The ATS Resume Kit</h3>
+  <p>Stop guessing. Everything you need to build a resume that parses clean and ranks high — used the same day you buy it.</p>
+  <ul>
+    <li>✅ ATS-safe resume templates — <strong>Word + Google Docs</strong> (single-column, parser-tested)</li>
+    <li>✅ <strong>150+ industry keyword</strong> cheat-sheet (tech, finance, marketing, ops, healthcare &amp; more)</li>
+    <li>✅ Cover-letter <strong>AI prompt pack</strong> — paste, tweak, send</li>
+    <li>✅ LinkedIn headline &amp; "About" kit to match your resume</li>
+  </ul>
+  <a class="btn" id="kitLink" href="https://hugoclaw.gumroad.com/l/ats-kit?from=checker" target="_blank" rel="noopener">Get the ATS Kit →</a>
+</div>
+
+<section class="info">
+  <h2>How the ATS score works</h2>
+  <p class="sub" style="text-align:left;max-width:none">Applicant Tracking Systems (Workday, Greenhouse, Taleo, iCIMS, Lever) don't read your resume like a human — they <em>parse</em> it into fields and match it against the job. This tool checks the same things they do: parseable structure, standard sections, contact details, measurable impact, and keyword overlap with the role. Aim for <strong>70+</strong>; 80+ is excellent.</p>
+
+  <details><summary>Why did a "beautiful" resume score low?</summary><p>Multi-column layouts, tables, text boxes, headers/footers, icons and graphics routinely scramble ATS parsing. A clean single-column layout with standard headings beats a designer template every time.</p></details>
+  <details><summary>Is my resume data safe?</summary><p>Yes. Everything runs in your browser with JavaScript. Nothing is uploaded, stored, or logged. Close the tab and it's gone.</p></details>
+  <details><summary>What file should I actually submit?</summary><p>For online applications, <strong>.docx</strong> is the most universally ATS-readable. A text-based PDF is fine when emailing a recruiter directly. Never submit images or scanned PDFs.</p></details>
+</section>
+
+<footer>
+  <p>Free ATS Resume Checker · runs 100% in your browser · no sign-up, no upload.</p>
+  <p><a id="kitLinkFoot" href="https://hugoclaw.gumroad.com/l/ats-kit?from=checker" target="_blank" rel="noopener">Get the ATS Resume Kit</a></p>
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+if (window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+/* ---------- tabs ---------- */
+const tabPaste=document.getElementById('tabPaste'),tabPdf=document.getElementById('tabPdf');
+const paneePaste=document.getElementById('paneePaste'),paneePdf=document.getElementById('paneePdf');
+let mode='paste';
+tabPaste.onclick=()=>{mode='paste';tabPaste.classList.add('active');tabPdf.classList.remove('active');paneePaste.classList.remove('hidden');paneePdf.classList.add('hidden')};
+tabPdf.onclick=()=>{mode='pdf';tabPdf.classList.add('active');tabPaste.classList.remove('active');paneePdf.classList.remove('hidden');paneePaste.classList.add('hidden')};
+
+/* ---------- pdf upload ---------- */
+const drop=document.getElementById('drop'),fileInput=document.getElementById('file'),pdfStatus=document.getElementById('pdfStatus');
+let pdfText='';
+drop.onclick=()=>fileInput.click();
+drop.ondragover=e=>{e.preventDefault();drop.classList.add('drag')};
+drop.ondragleave=()=>drop.classList.remove('drag');
+drop.ondrop=e=>{e.preventDefault();drop.classList.remove('drag');if(e.dataTransfer.files[0])readPdf(e.dataTransfer.files[0])};
+fileInput.onchange=e=>{if(e.target.files[0])readPdf(e.target.files[0])};
+async function readPdf(f){
+  if(f.type!=='application/pdf'){pdfStatus.textContent='Please choose a PDF file.';return}
+  pdfStatus.textContent='Reading '+f.name+'…';
+  try{
+    const buf=await f.arrayBuffer();
+    const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+    let t='';
+    for(let i=1;i<=pdf.numPages;i++){const pg=await pdf.getPage(i);const c=await pg.getTextContent();t+=c.items.map(x=>x.str).join(' ')+'\n'}
+    pdfText=t;
+    pdfStatus.textContent='✓ Loaded '+pdf.numPages+' page(s), '+t.split(/\s+/).length+' words. Click "Check my resume".';
+  }catch(err){pdfStatus.textContent='Could not read this PDF (it may be a scanned image). Try pasting text instead.';pdfText=''}
+}
+
+/* ---------- scoring ---------- */
+const ACTION=["led","managed","developed","designed","implemented","created","built","launched","increased","reduced","improved","optimized","delivered","achieved","drove","spearheaded","coordinated","executed","established","generated","negotiated","streamlined","automated","analyzed","architected","scaled","mentored","directed","oversaw","produced","accelerated","transformed","initiated","founded","restructured","consolidated","pioneered","orchestrated","facilitated","resolved","engineered","deployed","migrated","integrated","forecasted","budgeted","audited","secured","expanded","boosted","grew","exceeded","surpassed","launched","owned","shipped","redesigned","launched"];
+const STOP=new Set("a an the and or of to in for with on at by from as is are be we our you your they their this that will can role job work team years experience strong ability skills using etc must have has had who which what when into across over per plus more most all any new other than then them it its".split(/\s+/));
+
+function tokens(s){return (s.toLowerCase().match(/[a-z][a-z+#.\-]{1,}/g)||[]);}
+
+function analyze(resume, jd){
+  const text=resume.trim();
+  const lower=text.toLowerCase();
+  const words=text.split(/\s+/).filter(Boolean);
+  const wc=words.length;
+  const cats=[];
+
+  // 1 contact (15)
+  const hasEmail=/[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}/i.test(text);
+  const hasPhone=/(\+?\d[\d\s().\-]{7,}\d)/.test(text);
+  let c1=(hasEmail?9:0)+(hasPhone?6:0);
+  cats.push({key:'Contact info',score:c1,max:15,
+    tips:[!hasEmail&&{p:'hi',t:'No email detected. Put a plain-text email in the top section (not in a header/footer).'},
+          !hasPhone&&{p:'me',t:'No phone number detected. Add a phone number near your name.'}].filter(Boolean)});
+
+  // 2 sections (20)
+  const sec={Experience:/(work experience|professional experience|employment|experience)/i.test(text),
+             Education:/education/i.test(text),
+             Skills:/(skills|technical skills|core competencies)/i.test(text)};
+  let c2=(sec.Experience?8:0)+(sec.Education?6:0)+(sec.Skills?6:0);
+  cats.push({key:'Standard sections',score:c2,max:20,
+    tips:[!sec.Experience&&{p:'hi',t:'Add a clearly labeled "Experience" or "Work Experience" heading — ATS keys on standard section names.'},
+          !sec.Education&&{p:'me',t:'Add an "Education" section heading.'},
+          !sec.Skills&&{p:'me',t:'Add a "Skills" section so the parser can extract your hard skills.'}].filter(Boolean)});
+
+  // 3 parseability (15) — penalize signals of tables/columns/odd chars
+  const tabCols=(text.match(/\t/g)||[]).length + (text.match(/ {3,}\S+ {3,}\S/g)||[]).length;
+  const weird=(text.match(/[^\x00-\x7F]/g)||[]).length;
+  let c3=15;
+  if(tabCols>6)c3-=7; else if(tabCols>2)c3-=3;
+  if(weird>25)c3-=6; else if(weird>10)c3-=3;
+  c3=Math.max(0,c3);
+  cats.push({key:'Parse-friendly formatting',score:c3,max:15,
+    tips:[tabCols>2&&{p:'hi',t:'Looks like multi-column or tab-aligned layout. ATS scramble columns/tables — switch to a single-column layout.'},
+          weird>10&&{p:'me',t:'Many non-standard characters/symbols detected. Replace fancy bullets/icons with plain text and a hyphen or • bullet.'}].filter(Boolean)});
+
+  // 4 action verbs (15)
+  const tks=tokens(lower);
+  const setTk=new Set(tks);
+  const av=ACTION.filter(v=>setTk.has(v)).length;
+  let c4=Math.min(15,Math.round(av/8*15));
+  cats.push({key:'Action verbs',score:c4,max:15,
+    tips:[av<8&&{p:'me',t:'Start bullets with strong action verbs (Led, Built, Increased, Reduced…). Found '+av+'; aim for 8+ distinct.'}].filter(Boolean)});
+
+  // 5 quantified impact (15)
+  const nums=(text.match(/(\$\s?\d|\d+\s?%|\b\d{2,}\b)/g)||[]).length;
+  let c5=Math.min(15,Math.round(nums/8*15));
+  cats.push({key:'Quantified impact',score:c5,max:15,
+    tips:[nums<6&&{p:'hi',t:'Add numbers to your wins (%, $, headcount, time saved). Recruiters & ATS-ranked resumes show measurable impact. Found '+nums+' figures.'}].filter(Boolean)});
+
+  // 6 length (10)
+  let c6=10,lenTip=null;
+  if(wc<200){c6=3;lenTip={p:'me',t:'Resume looks short ('+wc+' words). Most strong resumes run 400–800 words.'};}
+  else if(wc<400){c6=7;lenTip={p:'lo',t:'A bit short ('+wc+' words) — consider adding measurable bullets.'};}
+  else if(wc>1100){c6=6;lenTip={p:'lo',t:'Long ('+wc+' words). Trim to the most relevant 1–2 pages.'};}
+  cats.push({key:'Length',score:c6,max:10,tips:[lenTip].filter(Boolean)});
+
+  // 7 dates (10)
+  const dates=(text.match(/((19|20)\d{2})|(\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+\d{4})|(\d{1,2}\/\d{4})/gi)||[]).length;
+  let c7=dates>=2?10:(dates===1?5:0);
+  cats.push({key:'Dates present',score:c7,max:10,
+    tips:[dates<2&&{p:'me',t:'Add consistent employment dates (e.g., "Jan 2021 – Mar 2024"). ATS use them to build your timeline.'}].filter(Boolean)});
+
+  const total=cats.reduce((a,c)=>a+c.score,0);
+
+  // keyword match vs JD
+  let kw=null;
+  if(jd && jd.trim().length>40){
+    const jdTk=tokens(jd).filter(w=>w.length>2 && !STOP.has(w));
+    const freq={};jdTk.forEach(w=>freq[w]=(freq[w]||0)+1);
+    // candidate keywords = reasonably frequent / meaningful
+    let cand=[...new Set(jdTk)].filter(w=>freq[w]>=1);
+    // prioritize words that look like skills (appear >=2 or length>=5)
+    cand=cand.filter(w=>freq[w]>=2 || w.length>=5);
+    cand=cand.sort((a,b)=>freq[b]-freq[a]).slice(0,30);
+    const hit=cand.filter(w=>setTk.has(w));
+    const miss=cand.filter(w=>!setTk.has(w));
+    kw={pct:cand.length?Math.round(hit.length/cand.length*100):0,hit,miss};
+  }
+  return {total,cats,kw,wc};
+}
+
+/* ---------- render ---------- */
+function ringSvg(score){
+  const r=56,c=2*Math.PI*r,off=c*(1-score/100);
+  const col=score>=80?'#2ea043':score>=65?'#388bfd':score>=45?'#d29922':'#da3633';
+  return `<svg width="128" height="128" viewBox="0 0 128 128">
+    <circle cx="64" cy="64" r="${r}" stroke="#2a313c" stroke-width="12" fill="none"/>
+    <circle cx="64" cy="64" r="${r}" stroke="${col}" stroke-width="12" fill="none"
+      stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}"/>
+  </svg>`;
+}
+function verdictText(s){
+  if(s>=80)return["Excellent","Your resume is highly ATS-friendly. Tune keywords per job and you're set."];
+  if(s>=65)return["Good","You'll pass most ATS. Fix the flagged items below to push past 80."];
+  if(s>=45)return["Needs work","Several parsing/keyword gaps are likely costing you interviews. Start with the red items."];
+  return["At risk","An ATS may struggle to parse or rank this resume. Tackle the red items first."];
+}
+const run=document.getElementById('run'),results=document.getElementById('results');
+run.onclick=()=>{
+  const resume = mode==='pdf' ? pdfText : document.getElementById('resume').value;
+  const jd=document.getElementById('jd').value;
+  if(!resume || resume.trim().split(/\s+/).length<30){
+    results.classList.remove('hidden');
+    results.innerHTML='<p>Please paste your full resume (or load a PDF) — I need at least a few lines to analyze.</p>';
+    results.scrollIntoView({behavior:'smooth'});return;
+  }
+  const a=analyze(resume,jd);
+  const [vt,vd]=verdictText(a.total);
+  let html=`<div class="scorerow">
+    <div class="ring">${ringSvg(a.total)}<div class="num"><b>${a.total}</b><span>/ 100</span></div></div>
+    <div class="verdict"><h2>${vt}</h2><p class="sub" style="text-align:left">${vd}</p></div>
+  </div><div class="bars">`;
+  a.cats.forEach(c=>{
+    const pct=Math.round(c.score/c.max*100);
+    const col=pct>=80?'var(--good)':pct>=50?'var(--accent)':'var(--bad)';
+    html+=`<div class="bar"><div class="top"><span>${c.key}</span><span>${c.score}/${c.max}</span></div>
+      <div class="track"><div class="fill" style="width:${pct}%;background:${col}"></div></div></div>`;
+  });
+  html+='</div>';
+
+  if(a.kw){
+    html+=`<div class="kwmatch"><h3>Keyword match vs job description: ${a.kw.pct}%</h3>`;
+    if(a.kw.miss.length){
+      html+=`<p class="hint">Missing keywords to weave in (only if truthful):</p><div class="chips">`;
+      a.kw.miss.slice(0,18).forEach(w=>html+=`<span class="chip miss">${w}</span>`);
+      html+='</div>';
+    }
+    if(a.kw.hit.length){
+      html+=`<p class="hint" style="margin-top:10px">Already matched:</p><div class="chips">`;
+      a.kw.hit.slice(0,18).forEach(w=>html+=`<span class="chip">${w}</span>`);
+      html+='</div>';
+    }
+    html+='</div>';
+  }
+
+  const tips=[];
+  a.cats.forEach(c=>c.tips.forEach(t=>tips.push(t)));
+  const order={hi:0,me:1,lo:2};
+  tips.sort((x,y)=>order[x.p]-order[y.p]);
+  if(tips.length){
+    html+='<h3 style="margin-top:18px">Prioritized fixes</h3><ul class="suggest">';
+    tips.forEach(t=>{const lbl=t.p==='hi'?'<span class="tag hi">HIGH</span>':t.p==='me'?'<span class="tag me">MEDIUM</span>':'<span class="tag lo">MINOR</span>';
+      html+=`<li>${lbl}${t.t}</li>`;});
+    html+='</ul>';
+  }else{
+    html+='<p style="margin-top:16px">✓ No major issues flagged. Tailor keywords to each job and keep impact quantified.</p>';
+  }
+  results.classList.remove('hidden');
+  results.innerHTML=html;
+  results.scrollIntoView({behavior:'smooth'});
+};
+</script>
+</body>
+</html>
