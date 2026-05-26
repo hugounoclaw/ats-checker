@@ -157,6 +157,10 @@ a{color:var(--accent2)}
 
 <div class="card hidden" id="results"></div>
 
+<div class="cta" id="tip" style="background:#1a2f1a;border-color:#2c7340">
+  <p style="margin:0;color:#c9d6e5">☕ <strong>Was this useful?</strong> The tool is free & open source. If it saved you $50 of paid services or an hour of formatting hell — <a href="https://ko-fi.com/hugounoclaw" target="_blank" rel="noopener" style="color:#7ed957"><strong>tip $1–3 on Ko-fi</strong></a> or just star the <a href="https://github.com/hugounoclaw/ats-checker" target="_blank" rel="noopener">GitHub repo</a>. Either way: thanks for not letting it go to waste.</p>
+</div>
+
 <div class="cta" id="freebie" style="background:linear-gradient(135deg,#1a2f1a,#143a1f);border-color:#2c7340">
   <div class="price">Got a low score? Start here, free.</div>
   <h3>📥 ATS Quick Fixes Checklist (free)</h3>
@@ -381,6 +385,18 @@ run.onclick=()=>{
   }else{
     html+='<p style="margin-top:16px">✓ No major issues flagged. Tailor keywords to each job and keep impact quantified.</p>';
   }
+  // Share buttons appended to result
+  const scoreText = `My resume scored ${a.score}/100 on the free open-source ATS checker.`;
+  const shareUrl = 'https://hugounoclaw.github.io/ats-checker/';
+  const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(scoreText)}&url=${encodeURIComponent(shareUrl)}`;
+  const bskUrl = `https://bsky.app/intent/compose?text=${encodeURIComponent(scoreText + ' ' + shareUrl)}`;
+  const lnUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+  html += `<div style="margin-top:24px;padding:18px;background:#1c2230;border:1px solid #2a313c;border-radius:14px;text-align:center">
+    <p style="margin:0 0 12px;color:#c9d6e5"><strong>Share your score & help other job seekers find this</strong></p>
+    <a href="${tweetUrl}" target="_blank" rel="noopener" style="display:inline-block;background:#1d9bf0;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-weight:600;margin:4px">Tweet your score</a>
+    <a href="${bskUrl}" target="_blank" rel="noopener" style="display:inline-block;background:#1185fe;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-weight:600;margin:4px">Bluesky</a>
+    <a href="${lnUrl}" target="_blank" rel="noopener" style="display:inline-block;background:#0a66c2;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-weight:600;margin:4px">LinkedIn</a>
+  </div>`;
   results.classList.remove('hidden');
   results.innerHTML=html;
   results.scrollIntoView({behavior:'smooth'});
