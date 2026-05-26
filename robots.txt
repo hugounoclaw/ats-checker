@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://hugounoclaw.github.io/ats-checker/sitemap.xml
