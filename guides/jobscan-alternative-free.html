@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Jobscan Alternative (2026): Why I Built an Open-Source ATS Resume Checker</title>
+<meta name="description" content="Looking for a free Jobscan alternative? Open-source ATS resume checker that runs client-side, no upload, no $50/month subscription. Honest comparison + the gotchas of paid checkers.">
+<link rel="canonical" href="https://hugounoclaw.github.io/ats-checker/guides/jobscan-alternative-free.html">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0d1117">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Free Jobscan Alternative (2026)">
+<meta property="og:description" content="Open-source ATS resume checker. Client-side, no upload, no subscription.">
+<meta property="og:url" content="https://hugounoclaw.github.io/ats-checker/guides/jobscan-alternative-free.html">
+<meta property="og:image" content="https://hugounoclaw.github.io/ats-checker/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://hugounoclaw.github.io/ats-checker/og.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"Free Jobscan Alternative (2026): Open-Source ATS Resume Checker","description":"Why I built an open-source alternative to Jobscan and ResumeWorded. Comparison of features, privacy, pricing, and accuracy.","author":{"@type":"Organization","name":"Free ATS Resume Checker"},"datePublished":"2026-05-27","mainEntityOfPage":"https://hugounoclaw.github.io/ats-checker/guides/jobscan-alternative-free.html"}
+</script>
+<style>
+:root{--bg:#0d1117;--panel:#161b22;--panel2:#1c2230;--line:#2a313c;--txt:#e6edf3;--muted:#9aa7b5;--accent:#1f6feb;--accent2:#58a6ff;--radius:14px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:28px 20px 60px}
+nav.bc{font-size:.85rem;color:var(--muted);margin-bottom:18px}
+nav.bc a{color:var(--accent2);text-decoration:none}
+h1{font-size:2rem;line-height:1.25;margin:.2em 0 .3em}
+h2{font-size:1.4rem;margin:1.6em 0 .4em}
+.meta{color:var(--muted);font-size:.9rem;margin-bottom:24px}
+p,li{color:#dbe6f3}a{color:var(--accent2)}
+table{border-collapse:collapse;width:100%;margin:18px 0;font-size:.92rem}
+table th,table td{padding:9px 12px;border:1px solid var(--line);text-align:left;vertical-align:top}
+table th{background:var(--panel);color:#fff}
+table tr:nth-child(even) td{background:var(--panel2)}
+.tool{background:linear-gradient(135deg,#13233f,#1b2b4a);border:1px solid #2c4673;border-radius:var(--radius);padding:22px;margin:28px 0;text-align:center}
+.tool h3{margin:.2em 0;font-size:1.2rem}
+.btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;padding:12px 22px;font-weight:700;border-radius:10px;margin-top:10px}
+footer{margin-top:48px;border-top:1px solid var(--line);padding-top:20px;color:var(--muted);font-size:.85rem;text-align:center}
+footer a{color:var(--accent2)}
+</style></head><body><div class="wrap">
+<nav class="bc"><a href="../">ATS Resume Checker</a> › <a href="./">Guides</a> › Jobscan Alternative</nav>
+<h1>Free Jobscan Alternative (2026): An Open-Source ATS Resume Checker</h1>
+<p class="meta">Honest comparison of the major paid ATS checkers vs. a free open-source one I built after one too many $49/month subscription pages.</p>
+
+<p>If you searched "Jobscan alternative free," you're not alone. Jobscan is the dominant paid ATS checker — it's good, but it's <strong>$49.95/month for unlimited scans</strong>, and the free tier is hard-capped at 5 scans total (lifetime, not monthly). For someone applying to 30+ jobs across a few weeks, paying $50/mo just to find out if your resume passes a parser is a hard sell.</p>
+
+<p>I built <a href="../">hugounoclaw/ats-checker</a> partly out of that frustration. It's free, open source, and runs entirely in your browser. Below is the honest comparison.</p>
+
+<h2>Feature comparison</h2>
+<table>
+<tr><th>Feature</th><th>This (ats-checker)</th><th>Jobscan</th><th>ResumeWorded</th><th>GoodSpace</th></tr>
+<tr><td>Free unlimited scans</td><td>✅ Yes</td><td>❌ 5 lifetime</td><td>❌ 2/month</td><td>✅ 1, paywall after</td></tr>
+<tr><td>Paid plan</td><td>$0 (optional $3 PWYW kit)</td><td>$49.95/mo</td><td>$19/mo</td><td>$29/mo</td></tr>
+<tr><td>Resume never uploaded</td><td>✅ Client-side</td><td>❌ Server-side</td><td>❌ Server-side</td><td>❌ Server-side</td></tr>
+<tr><td>Open source / audit-able</td><td>✅ MIT, on GitHub</td><td>❌ Proprietary</td><td>❌ Proprietary</td><td>❌ Proprietary</td></tr>
+<tr><td>Signup required</td><td>❌ None</td><td>✅ Email</td><td>✅ Email</td><td>❌ For first scan</td></tr>
+<tr><td>JD keyword match</td><td>✅ Yes</td><td>✅ Yes</td><td>✅ Yes</td><td>✅ Yes</td></tr>
+<tr><td>Score 0–100</td><td>✅ Yes</td><td>✅ Yes (paywall)</td><td>✅ Yes (paywall)</td><td>✅ Yes</td></tr>
+<tr><td>Prioritized fixes</td><td>✅ Yes</td><td>✅ Yes (paywall)</td><td>✅ Yes (paywall)</td><td>✅ Yes</td></tr>
+<tr><td>Cover letter check</td><td>📄 Article only</td><td>✅ Paid</td><td>✅ Paid</td><td>❌</td></tr>
+<tr><td>"Power Edit" auto-rewrite</td><td>❌ No</td><td>✅ Paid</td><td>❌</td><td>❌</td></tr>
+</table>
+
+<h2>Where Jobscan wins (be honest)</h2>
+<p>Jobscan has spent years building features the open-source tool doesn't have:</p>
+<ul>
+<li><strong>Power Edit</strong> — paste your resume into their editor and it suggests rewrites inline. The OSS version doesn't auto-rewrite; you do the editing yourself.</li>
+<li><strong>LinkedIn optimization</strong> — Jobscan scans your LinkedIn profile against a JD too. The OSS version is resume-only.</li>
+<li><strong>Multiple resume versions tracked</strong> — paid plans save your scan history. The OSS version is stateless (no account = no history).</li>
+<li><strong>Industry credibility</strong> — Jobscan is the household name, used by career coaches as the "go-to" recommendation. The OSS version is brand new.</li>
+</ul>
+
+<p>If you're applying to <em>one</em> high-stakes role and want the most polished, hand-held experience, Jobscan's first scan is worth running. For applying to <em>many</em> roles iteratively, the math doesn't work — that's where the OSS tool is built for.</p>
+
+<h2>Where the OSS version wins</h2>
+<ol>
+<li><strong>Unlimited scans, free</strong>. Apply to 200 jobs, scan all 200. No "you have 0 scans remaining" wall.</li>
+<li><strong>Resume never leaves your device</strong>. Jobscan and ResumeWorded both upload your resume to their servers. The OSS tool parses entirely in your browser using JavaScript. The repo source is public; you can audit the code.</li>
+<li><strong>No signup, no email harvest</strong>. Paid services use the free tier as a lead-gen funnel. The OSS tool is just a tool — no email box, no remarketing.</li>
+<li><strong>You control the data</strong>. If you're paranoid about job-hunt activity leaving a paper trail (e.g., applying while employed), a client-side tool is meaningfully safer.</li>
+<li><strong>Optional $12 kit</strong> if you want done-for-you ATS-safe templates and a 150+ keyword cheat-sheet — but the tool itself stays free forever.</li>
+</ol>
+
+<h2>What about ResumeWorded?</h2>
+<p>ResumeWorded is cheaper than Jobscan at $19/mo and has good bullet-point rewriting AI. Same caveats apply — server-side, signup required, 2 free scans/month. If you specifically want AI to rewrite your bullet points, RW is decent. For pure ATS parsing-and-keyword feedback, the OSS tool covers the same ground for free.</p>
+
+<h2>What about GoodSpace?</h2>
+<p>GoodSpace has a generous free first scan and decent multilingual support. They lean more recruiter-side; their consumer tool is solid but limited (no version history, no LinkedIn). Worth a free scan to compare against the OSS tool's output.</p>
+
+<h2>How to decide</h2>
+<p><strong>Use the OSS tool if</strong>: you're applying to many roles, iterating fast, value privacy, want unlimited scans, and don't need auto-rewrite handholding.</p>
+<p><strong>Use Jobscan if</strong>: you want the most polished experience for 1–3 critical applications and the $50/month is worth the time savings.</p>
+
+<div class="tool">
+  <h3>Try the free OSS version (right now, no signup)</h3>
+  <p>Paste your resume + a job description. Get instant 0–100 ATS score, keyword match, and prioritized fixes. Runs entirely in your browser.</p>
+  <a class="btn" href="../?from=jobscan-alt">Run my resume free →</a>
+</div>
+
+<footer>
+  <p><a href="./">← All guides</a> · <a href="https://github.com/hugounoclaw/ats-checker" target="_blank" rel="noopener">GitHub source</a> · <a href="https://hugoclaw.gumroad.com/l/ats-kit?from=jobscan-alt-foot" target="_blank" rel="noopener">Optional $12 ATS Kit</a></p>
+</footer>
+</div></body></html>
