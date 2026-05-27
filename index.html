@@ -99,6 +99,10 @@ label.fld{display:block;font-weight:600;margin:14px 0 6px}
   font-weight:700;border-radius:10px;cursor:pointer;width:100%;margin-top:16px}
 .btn:hover{background:var(--accent2)}
 .btn.ghost{background:transparent;border:1px solid var(--accent);color:var(--accent2)}
+.btn.ghost.demo-btn{width:auto;display:block;margin:14px auto 0;padding:10px 18px;font-size:.95rem;font-weight:600}
+.btn.ghost.demo-btn:hover{background:rgba(31,111,235,.12)}
+.demo-mini{display:none}
+@media(max-width:560px){.demo-full{display:none}.demo-mini{display:inline}}
 .hidden{display:none!important}
 /* results */
 .scorerow{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
@@ -181,6 +185,7 @@ a{color:var(--accent2)}
   <label class="fld" for="jd">Job description <span style="font-weight:400;color:var(--muted)">(optional — unlocks keyword match)</span></label>
   <textarea id="jd" placeholder="Paste the job posting to see how many of its keywords your resume hits…"></textarea>
 
+  <button class="btn ghost demo-btn" id="demo" type="button"><span class="demo-full">✨ Try with a sample resume</span><span class="demo-mini">✨ Try sample</span></button>
   <button class="btn" id="run">Check my resume →</button>
 </div>
 
@@ -474,6 +479,34 @@ run.onclick=()=>{
   }
   results.scrollIntoView({behavior:'smooth'});
 };
+
+/* ---------- "Try with a sample resume" demo (progressive disclosure) ---------- */
+const SAMPLE_RESUME="Jordan Reyes\nSan Francisco, CA | jordan.reyes@email.com | (415) 555-0182 | linkedin.com/in/jordanreyes\n\nSummary\nSenior Data Analyst with seven years of experience helping SaaS and retail teams turn messy data into decisions they can act on. Comfortable owning the full path from raw SQL and data modeling through dashboards and the stakeholder readouts that leadership uses to set priorities each quarter.\n\nSkills\nSQL, Python, Tableau, Looker, dbt, Snowflake, A/B testing, experimentation, ETL, data modeling, statistics, stakeholder communication, analytics\n\nWork Experience\n\nSenior Data Analyst, BrightCart (Mar 2021 - Present)\n- Built the company's first self-serve Looker dashboards and trained 40 colleagues to answer their own questions without waiting on the analytics team.\n- Ran a continuous program of A/B tests on the checkout flow and improved conversion by 12 percent over four quarters.\n- Partnered with finance and marketing leaders on the weekly revenue and retention reporting cycle that informed budget planning.\n\nData Analyst, Northwind Retail (Jun 2018 - Feb 2021)\n- Developed demand forecasting models in Python that lifted inventory accuracy across 45 retail stores in three regions.\n- Owned the executive Tableau dashboards that tracked the KPIs the leadership team relied on each month.\n- Investigated cohort retention, then presented segment-level recommendations to the product team that shaped the roadmap.\n\nJunior Data Analyst, DataPeak (Jul 2016 - May 2018)\n- Wrote and tuned the SQL queries that powered daily operational reporting across three departments.\n- Supported senior analysts with data cleaning, quality assurance, and the ad-hoc analysis requests that came up each week.\n\nEducation\nB.S. in Statistics, University of California, Davis (2016)";
+const SAMPLE_JD="Senior Data Analyst\n\nAbout the role\nWe are looking for a Senior Data Analyst to join our analytics team and partner with product, marketing, and finance stakeholders. You will own dashboards and reporting, design experiments, and turn data into recommendations that leadership can act on. This is a high-impact role for someone who enjoys both deep analysis and clear communication.\n\nResponsibilities\n- Build and maintain dashboards in Tableau and Looker that track core business KPIs.\n- Design and analyze A/B tests and experiments to improve conversion and retention.\n- Write efficient SQL and build data models in dbt against our Snowflake warehouse.\n- Develop forecasting models and surface trends to product and finance partners.\n- Communicate findings to stakeholders and influence the product roadmap with data.\n\nRequirements\n- 5+ years of experience as a data analyst or in a similar analytics role.\n- Expert SQL and strong Python for analysis and automation.\n- Hands-on experience with Tableau or Looker and modern ETL pipelines.\n- Solid grounding in statistics, experimentation, and data modeling.\n- Excellent stakeholder communication and the ability to explain technical results simply.\n\nNice to have\n- Experience with dbt, Snowflake, and cloud data warehouses.\n- Background in SaaS or e-commerce analytics.";
+const demoBtn=document.getElementById('demo');
+if(demoBtn){
+  demoBtn.onclick=()=>{
+    if(mode!=='paste')tabPaste.click();              // show the textarea we're filling
+    document.getElementById('resume').value=SAMPLE_RESUME;
+    document.getElementById('jd').value=SAMPLE_JD;
+    results.classList.remove('hidden');
+    results.innerHTML='<p class="hint" style="margin:0">Scoring sample resume…</p>';
+    results.scrollIntoView({behavior:'smooth'});
+    setTimeout(()=>{                                  // 300ms: feels intentional, not instant
+      run.onclick();
+      const b=document.createElement('div');
+      b.style.cssText='margin-bottom:16px;padding:11px 14px;background:rgba(31,111,235,.12);border:1px solid #2c4673;border-radius:10px;color:#c9d6e5;font-size:.9rem;text-align:center';
+      b.innerHTML='✨ <strong>Demo result.</strong> Now paste your own resume above to score it.';
+      results.insertBefore(b,results.firstChild);
+      demoBtn.classList.add('hidden');
+    },300);
+  };
+  // progressive disclosure: drop the demo button once the visitor types their own content
+  ['resume','jd'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.addEventListener('input',()=>demoBtn.classList.add('hidden'));
+  });
+}
 
 /* ---------- shareable badge (1200×630, vanilla canvas) ---------- */
 function roundRect(c,x,y,w,h,r){
