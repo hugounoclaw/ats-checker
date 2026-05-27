@@ -412,22 +412,101 @@ run.onclick=()=>{
   }else{
     html+='<p style="margin-top:16px">✓ No major issues flagged. Tailor keywords to each job and keep impact quantified.</p>';
   }
-  // Share buttons appended to result
-  const scoreText = `My resume scored ${a.total}/100 on the free open-source ATS checker.`;
+  // ---------- tier-specific share / badge (additive) ----------
   const shareUrl = 'https://hugounoclaw.github.io/ats-checker/';
-  const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(scoreText)}&url=${encodeURIComponent(shareUrl)}`;
-  const bskUrl = `https://bsky.app/intent/compose?text=${encodeURIComponent(scoreText + ' ' + shareUrl)}`;
-  const lnUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
-  html += `<div style="margin-top:24px;padding:18px;background:#1c2230;border:1px solid #2a313c;border-radius:14px;text-align:center">
-    <p style="margin:0 0 12px;color:#c9d6e5"><strong>Share your score & help other job seekers find this</strong></p>
-    <a href="${tweetUrl}" target="_blank" rel="noopener" style="display:inline-block;background:#1d9bf0;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-weight:600;margin:4px">Tweet your score</a>
-    <a href="${bskUrl}" target="_blank" rel="noopener" style="display:inline-block;background:#1185fe;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-weight:600;margin:4px">Bluesky</a>
-    <a href="${lnUrl}" target="_blank" rel="noopener" style="display:inline-block;background:#0a66c2;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-weight:600;margin:4px">LinkedIn</a>
-  </div>`;
+  if(a.total>=80){
+    // earned the ATS-Ready badge → canvas PNG + share-with-image
+    const badgeText = `I scored ${a.total}/100 — my resume is ATS-Ready ✅ Checked it free (100% private, runs in-browser) at ${shareUrl}`;
+    const tw = `https://twitter.com/intent/tweet?text=${encodeURIComponent(badgeText)}`;
+    const bsk = `https://bsky.app/intent/compose?text=${encodeURIComponent(badgeText)}`;
+    const ln = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+    html += `<div style="margin-top:24px;padding:22px;background:linear-gradient(135deg,#13241a,#143a1f);border:1px solid #2c7340;border-radius:14px;text-align:center">
+      <h3 style="margin:.1em 0 4px">🏆 You earned the ATS-Ready Badge</h3>
+      <p class="hint" style="margin:0 0 14px">Download it and drop it into your LinkedIn / X post — recruiters notice a verified badge.</p>
+      <canvas id="badgeCanvas" style="width:100%;max-width:520px;height:auto;border-radius:10px;border:1px solid #2a313c"></canvas>
+      <div style="margin-top:16px">
+        <button id="dlBadge" class="btn" style="width:auto;display:inline-block;background:#3a9d4d;margin:4px">⬇ Download PNG</button>
+        <a href="${ln}" target="_blank" rel="noopener" class="btn" style="width:auto;display:inline-block;background:#0a66c2;margin:4px;text-decoration:none">Share on LinkedIn</a>
+        <a href="${tw}" target="_blank" rel="noopener" class="btn" style="width:auto;display:inline-block;background:#1d9bf0;margin:4px;text-decoration:none">Share on X</a>
+        <a href="${bsk}" target="_blank" rel="noopener" class="btn" style="width:auto;display:inline-block;background:#1185fe;margin:4px;text-decoration:none">Share on Bluesky</a>
+      </div>
+      <p class="hint" style="margin:12px 0 0">The buttons prefill the text — <strong>attach the downloaded PNG</strong> to your post (LinkedIn/X/Bluesky can't pull the image from a link reliably).</p>
+    </div>`;
+  } else {
+    if(a.total>=70){
+      // 70-79: softer nudge, no badge
+      html += `<div style="margin-top:24px;padding:18px;background:#23200f;border:1px solid #5a4d1e;border-radius:14px;text-align:center">
+        <p style="margin:0;color:#e3b341"><strong>🎯 Nearly there!</strong> You're at ${a.total}/100 — clear a couple of the fixes above to cross 80 and unlock a shareable ATS-Ready badge.</p>
+      </div>`;
+    }
+    // existing generic share flow (unchanged for <80)
+    const scoreText = `My resume scored ${a.total}/100 on the free open-source ATS checker.`;
+    const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(scoreText)}&url=${encodeURIComponent(shareUrl)}`;
+    const bskUrl = `https://bsky.app/intent/compose?text=${encodeURIComponent(scoreText + ' ' + shareUrl)}`;
+    const lnUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+    html += `<div style="margin-top:24px;padding:18px;background:#1c2230;border:1px solid #2a313c;border-radius:14px;text-align:center">
+      <p style="margin:0 0 12px;color:#c9d6e5"><strong>Share your score & help other job seekers find this</strong></p>
+      <a href="${tweetUrl}" target="_blank" rel="noopener" style="display:inline-block;background:#1d9bf0;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-weight:600;margin:4px">Tweet your score</a>
+      <a href="${bskUrl}" target="_blank" rel="noopener" style="display:inline-block;background:#1185fe;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-weight:600;margin:4px">Bluesky</a>
+      <a href="${lnUrl}" target="_blank" rel="noopener" style="display:inline-block;background:#0a66c2;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-weight:600;margin:4px">LinkedIn</a>
+    </div>`;
+  }
   results.classList.remove('hidden');
   results.innerHTML=html;
+  // draw the badge canvas + wire download (only present for 80+)
+  if(a.total>=80){
+    const cv=document.getElementById('badgeCanvas');
+    if(cv){
+      drawBadge(cv,a.total);
+      const dl=document.getElementById('dlBadge');
+      if(dl)dl.onclick=()=>cv.toBlob(b=>{
+        const u=URL.createObjectURL(b),x=document.createElement('a');
+        x.href=u;x.download='ats-ready-badge.png';x.click();
+        setTimeout(()=>URL.revokeObjectURL(u),1000);
+      },'image/png');
+    }
+  }
   results.scrollIntoView({behavior:'smooth'});
 };
+
+/* ---------- shareable badge (1200×630, vanilla canvas) ---------- */
+function roundRect(c,x,y,w,h,r){
+  if(c.roundRect){c.beginPath();c.roundRect(x,y,w,h,r);return;}
+  c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);
+  c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();
+}
+function drawBadge(cv,score){
+  const W=1200,H=630,FONT='-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif';
+  cv.width=W;cv.height=H;
+  const x=cv.getContext('2d');
+  // background gradient (dark theme tokens)
+  const g=x.createLinearGradient(0,0,W,H);
+  g.addColorStop(0,'#0d1117');g.addColorStop(.55,'#161b22');g.addColorStop(1,'#1c2230');
+  x.fillStyle=g;x.fillRect(0,0,W,H);
+  // soft green glow
+  const rg=x.createRadialGradient(W/2,150,30,W/2,150,560);
+  rg.addColorStop(0,'rgba(46,160,67,.16)');rg.addColorStop(1,'rgba(46,160,67,0)');
+  x.fillStyle=rg;x.fillRect(0,0,W,H);
+  // badge border
+  x.lineWidth=6;x.strokeStyle='#2ea043';roundRect(x,34,34,W-68,H-68,28);x.stroke();
+  x.lineWidth=1;x.strokeStyle='rgba(255,255,255,.06)';roundRect(x,50,50,W-100,H-100,20);x.stroke();
+  // checkmark medallion
+  const cx=W/2,cy=170,r=66;
+  x.beginPath();x.arc(cx,cy,r,0,Math.PI*2);x.fillStyle='#2ea043';x.fill();
+  x.lineWidth=14;x.strokeStyle='#fff';x.lineCap='round';x.lineJoin='round';
+  x.beginPath();x.moveTo(cx-30,cy+2);x.lineTo(cx-8,cy+26);x.lineTo(cx+34,cy-26);x.stroke();
+  // big score (auto-shrink to fit)
+  x.textAlign='center';x.fillStyle='#e6edf3';
+  let fs=190;x.font=`800 ${fs}px ${FONT}`;
+  while(x.measureText(score+'/100').width>W-200&&fs>90){fs-=10;x.font=`800 ${fs}px ${FONT}`;}
+  x.fillText(score+'/100',cx,418);
+  // subtitle
+  x.fillStyle='#4ac26b';x.font=`700 56px ${FONT}`;
+  x.fillText('ATS-Ready Resume',cx,492);
+  // tagline
+  x.fillStyle='#9aa7b4';x.font=`400 30px ${FONT}`;
+  x.fillText('Verified by hugounoclaw.github.io/ats-checker',cx,558);
+}
 </script>
 </body>
 </html>
