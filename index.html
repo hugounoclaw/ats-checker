@@ -154,6 +154,8 @@ a{color:var(--accent2)}
   <p style="margin:14px 0 0"><a href="best-ats-resume-checkers.html" style="color:#58a6ff;font-weight:600">See how we compare to 6 other ATS checkers →</a></p>
 </header>
 
+<a href="bookmarklet.html" style="display:block;text-decoration:none;background:linear-gradient(135deg,#16233a,#1a2f1a);border:1px solid #2c7340;border-radius:12px;padding:12px 16px;margin-top:16px;color:#c9d6e5;font-size:.95rem;text-align:center">🔖 <strong style="color:#7ed957">Install the 1-click bookmarklet</strong> → score any LinkedIn / Indeed / Greenhouse job without copy-paste →</a>
+
 <div class="card">
   <div class="tabs">
     <div class="tab active" id="tabPaste">Paste text</div>
@@ -220,7 +222,7 @@ a{color:var(--accent2)}
 
 <footer>
   <p>Free ATS Resume Checker · runs 100% in your browser · no sign-up, no upload.</p>
-  <p><a href="keyword-extractor.html">JD Keyword Extractor</a> · <a href="guides/how-ats-works.html">How ATS Works</a> · <a href="guides/">Resume Guides</a> · <a id="kitLinkFoot" href="https://hugoclaw.gumroad.com/l/ats-kit?from=checker" target="_blank" rel="noopener">Get the ATS Resume Kit</a></p>
+  <p><a href="bookmarklet.html">🔖 1-Click Bookmarklet</a> · <a href="keyword-extractor.html">JD Keyword Extractor</a> · <a href="guides/how-ats-works.html">How ATS Works</a> · <a href="guides/">Resume Guides</a> · <a id="kitLinkFoot" href="https://hugoclaw.gumroad.com/l/ats-kit?from=checker" target="_blank" rel="noopener">Get the ATS Resume Kit</a></p>
 </footer>
 
 </div>
@@ -507,6 +509,33 @@ function drawBadge(cv,score){
   x.fillStyle='#9aa7b4';x.font=`400 30px ${FONT}`;
   x.fillText('Verified by hugounoclaw.github.io/ats-checker',cx,558);
 }
+
+/* ---------- URL param prefill (bookmarklet & share links) ---------- */
+(function(){
+  var p=new URLSearchParams(location.search);
+  var jd=p.get('jd'), rz=p.get('resume');
+  if(rz){var rEl=document.getElementById('resume');if(rEl)rEl.value=rz;}
+  if(jd){
+    var truncated=false;
+    if(jd.length>1800){jd=jd.slice(0,1800);truncated=true;}
+    var jEl=document.getElementById('jd');
+    if(jEl){
+      jEl.value=jd;
+      if(truncated){
+        var n=document.createElement('p');
+        n.className='hint';n.style.color='var(--warn)';
+        n.textContent='(JD truncated — paste the full version for an accurate score)';
+        jEl.parentNode.insertBefore(n,jEl.nextSibling);
+      }
+      // Bring the prefilled inputs into view and put the cursor where the user must act next (resume).
+      setTimeout(function(){
+        var rEl=document.getElementById('resume');
+        (rEl||jEl).scrollIntoView({behavior:'smooth',block:'center'});
+        if(rEl)rEl.focus();
+      },120);
+    }
+  }
+})();
 </script>
 </body>
 </html>

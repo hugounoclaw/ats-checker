@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ATS Resume Checker Bookmarklet — Score Any Job in One Click (2026)</title>
+<meta name="description" content="Free bookmarklet that scores your resume against any LinkedIn, Indeed, or Greenhouse job in one click. Drag it to your bookmark bar — no extension, no install, no copy-paste. Reads the job description and opens the ATS checker pre-filled.">
+<link rel="canonical" href="https://hugounoclaw.github.io/ats-checker/bookmarklet.html">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#1f6feb">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="ATS Resume Checker Bookmarklet — Score Any Job in One Click">
+<meta property="og:description" content="Drag one button to your bookmark bar and score your resume against any LinkedIn / Indeed / Greenhouse job in a single click. No extension, no copy-paste.">
+<meta property="og:url" content="https://hugounoclaw.github.io/ats-checker/bookmarklet.html">
+<meta property="og:image" content="https://hugounoclaw.github.io/ats-checker/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://hugounoclaw.github.io/ats-checker/og.png">
+<meta name="twitter:title" content="ATS Checker Bookmarklet — Score Any Job in One Click">
+<meta name="twitter:description" content="One click on any job page → instant ATS score. Drag to your bookmark bar, no extension needed.">
+
+<!-- JSON-LD: WebApplication -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ATS Resume Checker Bookmarklet",
+  "url": "https://hugounoclaw.github.io/ats-checker/bookmarklet.html",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Any (web browser with a bookmark bar)",
+  "browserRequirements": "Requires JavaScript and a desktop browser bookmark bar",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "description": "A one-click bookmarklet that extracts the job description from LinkedIn, Indeed, or Greenhouse job pages and opens the free ATS Resume Checker pre-filled — no browser extension or copy-paste required. Runs client-side; reads page text only and never transmits it anywhere except your own browser tab."
+}
+</script>
+<!-- JSON-LD: HowTo -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to install the ATS Resume Checker bookmarklet",
+  "step": [
+    { "@type": "HowToStep", "position": 1, "name": "Show your bookmark bar", "text": "Press Ctrl+Shift+B (Windows/Linux) or Cmd+Shift+B (Mac) to show your browser's bookmark bar." },
+    { "@type": "HowToStep", "position": 2, "name": "Drag the button", "text": "Drag the 'ATS Score this job' button onto your bookmark bar. It saves as a bookmark." },
+    { "@type": "HowToStep", "position": 3, "name": "Click it on any job page", "text": "Open a LinkedIn, Indeed, or Greenhouse job posting and click the bookmark. The ATS checker opens with the job description already filled in." }
+  ]
+}
+</script>
+
+<style>
+:root{
+  --bg:#0d1117; --panel:#161b22; --panel2:#1c2230; --line:#2a313c;
+  --txt:#e6edf3; --muted:#9aa7b4; --accent:#1f6feb; --accent2:#388bfd;
+  --good:#2ea043; --warn:#d29922; --bad:#da3633; --radius:14px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg);color:var(--txt);line-height:1.6}
+.wrap{max-width:760px;margin:0 auto;padding:24px 18px 64px}
+header.hero{text-align:center;padding:30px 0 8px}
+h1{font-size:2rem;margin:.2em 0;line-height:1.2}
+h2{font-size:1.3rem;margin:1.8em 0 .4em}
+.sub{color:var(--muted);font-size:1.06rem;max-width:620px;margin:0 auto}
+.badge{display:inline-block;background:rgba(46,160,67,.12);color:#4ac26b;border:1px solid rgba(46,160,67,.4);
+  font-size:.78rem;padding:3px 10px;border-radius:999px;margin-top:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin-top:24px}
+p{margin:.7em 0}
+a{color:var(--accent2)}
+.dragzone{text-align:center;padding:30px 16px;border:2px dashed #2c7340;border-radius:14px;
+  background:linear-gradient(135deg,#16233a,#1a2f1a);margin:8px 0 6px}
+.bm{display:inline-block;background:var(--good);color:#fff;font-weight:800;font-size:1.15rem;
+  padding:15px 28px;border-radius:12px;text-decoration:none;cursor:grab;box-shadow:0 4px 14px rgba(46,160,67,.4);
+  user-select:none}
+.bm:hover{background:#34b14f}
+.bm:active{cursor:grabbing}
+.dwhy{color:var(--muted);font-size:.85rem;margin-top:14px}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0}
+.steps li{counter-increment:s;position:relative;padding:10px 0 10px 42px;border-bottom:1px solid var(--line)}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(s);position:absolute;left:0;top:9px;width:28px;height:28px;border-radius:50%;
+  background:var(--accent);color:#fff;font-weight:700;text-align:center;line-height:28px}
+kbd{background:#0d1117;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;
+  padding:1px 7px;font-family:ui-monospace,Menlo,monospace;font-size:.85em}
+.tested{list-style:none;padding:0;margin:0}
+.tested li{padding:8px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.tested li:last-child{border-bottom:none}
+.ok{color:#4ac26b;font-weight:600}
+.partial{color:var(--warn);font-weight:600}
+.flow{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin:18px 0}
+.flow .box{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;
+  text-align:center;font-size:.85rem;min-width:120px}
+.flow .box b{display:block;color:var(--txt);font-size:.95rem;margin-bottom:2px}
+.flow .arrow{color:var(--accent2);font-size:1.5rem;font-weight:700}
+.note{background:rgba(31,111,235,.08);border:1px solid rgba(56,139,253,.4);border-radius:10px;padding:14px 16px;margin-top:8px}
+code{background:#0d1117;border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-family:ui-monospace,Menlo,monospace;font-size:.85em;word-break:break-all}
+footer{margin-top:48px;text-align:center;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padding-top:22px}
+.cta{background:linear-gradient(135deg,#1a2f1a,#143a1f);border:1px solid #2c7340;border-radius:var(--radius);padding:18px;margin-top:24px;text-align:center}
+.btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;padding:12px 20px;font-weight:700;border-radius:10px;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>🔖 ATS Checker Bookmarklet</h1>
+  <p class="sub">Score your resume against <strong>any job posting in one click</strong> — no copy-paste, no browser extension, no install screen.</p>
+  <div class="badge">🔒 Reads the page text only · sends nothing anywhere · 100% client-side</div>
+</header>
+
+<div class="card">
+  <p><strong>What it does.</strong> Most ATS checkers make you copy the job description, switch tabs, and paste it. This skips all of that. Open any job posting, click the bookmark, and the <a href="./">free ATS Resume Checker</a> opens with the job description already filled in — you just paste your resume and hit check.</p>
+
+  <p><strong>How to install (2 seconds).</strong> This isn't an extension — it's a <em>bookmarklet</em>: a normal bookmark whose link is a tiny piece of JavaScript. Drag the green button below onto your bookmark bar. That's the whole install. (Press <kbd>Ctrl/Cmd</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd> first if your bookmark bar is hidden.)</p>
+
+  <p><strong>Supported sites.</strong> It auto-detects the job-description block on <strong>LinkedIn, Indeed, and Greenhouse</strong>, and falls back to the page's main content on most other job boards. If a site isn't recognized, it grabs the page text so you can trim it — see the fallback note below.</p>
+
+  <div class="dragzone">
+    <a class="bm" draggable="true" href="javascript:(function(){function g(s){var e=document.querySelector(s);return e&&e.innerText.trim()}var t=g('.jobs-description__content')||g('#jobDescriptionText,.job-snippet')||g('.job__description,article[data-test=job-description]')||g('main')||document.body.innerText;location.href='https://hugounoclaw.github.io/ats-checker/?jd='+encodeURIComponent(t.slice(0,1800))})();">⬇ ATS Score this job</a>
+    <p class="dwhy">↑ <strong>Drag</strong> this button to your bookmark bar (don't click it here — it only works on a job page).</p>
+  </div>
+
+  <h2>How it works</h2>
+  <div class="flow">
+    <div class="box"><b>1. LinkedIn job</b>Open any posting</div>
+    <div class="arrow">→</div>
+    <div class="box"><b>2. Click bookmark</b>"ATS Score this job"</div>
+    <div class="arrow">→</div>
+    <div class="box"><b>3. Checker opens</b>JD pre-filled, paste resume</div>
+  </div>
+
+  <h2>Install it manually</h2>
+  <ol class="steps">
+    <li>Show your bookmark bar: <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd> (Windows/Linux) or <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd> (Mac).</li>
+    <li>Drag the green <strong>ATS Score this job</strong> button onto the bar. It saves as a bookmark.</li>
+    <li>Open a job posting and click the bookmark — the checker opens with the JD filled in.</li>
+  </ol>
+</div>
+
+<div class="card">
+  <h2>Tested on</h2>
+  <ul class="tested">
+    <li><span><strong>LinkedIn</strong> — <code>.jobs-description__content</code></span> <span class="ok">✓ verified selector</span></li>
+    <li><span><strong>Indeed</strong> — <code>#jobDescriptionText</code>, <code>.job-snippet</code></span> <span class="ok">✓ verified selector</span></li>
+    <li><span><strong>Greenhouse</strong> — <code>.job__description</code>, <code>article[data-test=job-description]</code></span> <span class="ok">✓ verified selector</span></li>
+    <li><span><strong>Most other boards</strong> — <code>&lt;main&gt;</code> region fallback</span> <span class="partial">◐ best-effort</span></li>
+    <li><span><strong>Anything else</strong> — full page text fallback</span> <span class="partial">◐ trim before scoring</span></li>
+  </ul>
+  <p class="dwhy">Selector cascade last reviewed: <strong>27 May 2026</strong>. Job boards change their markup occasionally — if a site stops auto-filling, the fallback still grabs the page text.</p>
+
+  <h2>If your site isn't supported</h2>
+  <div class="note">
+    No problem — the bookmarklet still opens the checker with whatever text it found. If it grabbed too much (nav menus, footers), just delete the extra lines in the job-description box before scoring. Or skip the bookmarklet entirely: open the <a href="./">ATS Resume Checker</a> and paste the job description by hand. Same result, one extra copy-paste.
+  </div>
+
+  <h2>Is it safe? (yes — here's exactly why)</h2>
+  <div class="note">
+    <p style="margin-top:0">The bookmarklet runs in the context of whatever page you're on (LinkedIn, Indeed, etc.), but it does exactly one thing: it <strong>reads</strong> the visible job-description text and <strong>redirects your own browser tab</strong> to this checker with that text in the URL. It does <strong>not</strong> send your data to any server, read your LinkedIn account, touch cookies, or post anything. There's no tracking and no network call — just a tab redirect you can watch happen.</p>
+    <p>Don't take our word for it — the entire code is right here, ~370 characters of plain JavaScript:</p>
+    <p><code>javascript:(function(){function g(s){var e=document.querySelector(s);return e&amp;&amp;e.innerText.trim()}var t=g('.jobs-description__content')||g('#jobDescriptionText,.job-snippet')||g('.job__description,article[data-test=job-description]')||g('main')||document.body.innerText;location.href='https://hugounoclaw.github.io/ats-checker/?jd='+encodeURIComponent(t.slice(0,1800))})();</code></p>
+    <p style="margin-bottom:0">The scoring itself also runs entirely in your browser — your resume never leaves your machine, by design.</p>
+  </div>
+</div>
+
+<div class="cta">
+  <h2 style="margin-top:0">Want the manual version?</h2>
+  <p>No bookmark bar (mobile, locked-down work laptop)? The checker works the classic way too — paste the JD yourself.</p>
+  <a class="btn" href="./">Open the ATS Resume Checker →</a>
+</div>
+
+<footer>
+  <p><a href="./">← Back to the free ATS Resume Checker</a> · runs 100% in your browser · no sign-up, no upload.</p>
+  <p><a href="keyword-extractor.html">JD Keyword Extractor</a> · <a href="guides/how-ats-works.html">How ATS Works</a> · <a href="guides/">Resume Guides</a> · <a href="best-ats-resume-checkers.html">Best ATS Checkers</a> · <a href="about.html">About</a></p>
+</footer>
+
+</div>
+</body>
+</html>
