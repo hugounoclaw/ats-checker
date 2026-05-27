@@ -413,7 +413,7 @@ run.onclick=()=>{
     html+='<p style="margin-top:16px">✓ No major issues flagged. Tailor keywords to each job and keep impact quantified.</p>';
   }
   // Share buttons appended to result
-  const scoreText = `My resume scored ${a.score}/100 on the free open-source ATS checker.`;
+  const scoreText = `My resume scored ${a.total}/100 on the free open-source ATS checker.`;
   const shareUrl = 'https://hugounoclaw.github.io/ats-checker/';
   const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(scoreText)}&url=${encodeURIComponent(shareUrl)}`;
   const bskUrl = `https://bsky.app/intent/compose?text=${encodeURIComponent(scoreText + ' ' + shareUrl)}`;
