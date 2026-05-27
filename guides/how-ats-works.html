@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How ATS Systems Actually Work (2026) — A Technical Breakdown</title>
+<meta name="description" content="A technical breakdown of how ATS software really works in 2026: how it ingests and parses resumes, normalizes text, and matches and scores you against the job.">
+<link rel="canonical" href="https://hugounoclaw.github.io/ats-checker/guides/how-ats-works.html">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0d1117">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How ATS Systems Actually Work (2026) — A Technical Breakdown">
+<meta property="og:description" content="The five stages of ATS processing — ingest, parse, normalize, match, rank — explained with real techniques (NER, OCR, TF-IDF, BERT embeddings) and honest per-vendor notes.">
+<meta property="og:url" content="https://hugounoclaw.github.io/ats-checker/guides/how-ats-works.html">
+<meta property="og:image" content="https://hugounoclaw.github.io/ats-checker/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How ATS Systems Actually Work (2026) — A Technical Breakdown">
+<meta name="twitter:description" content="The five stages of ATS processing explained — parsing, NER, OCR fallback, TF-IDF vs semantic embeddings, and what each major vendor actually does.">
+<meta name="twitter:image" content="https://hugounoclaw.github.io/ats-checker/og.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"How ATS Systems Actually Work (2026) — A Technical Breakdown","description":"A technical breakdown of how Applicant Tracking Systems ingest, parse, normalize, match, and rank resumes in 2026 — with real techniques and honest per-vendor notes.","author":{"@type":"Person","name":"hugounoclaw"},"publisher":{"@type":"Organization","name":"Free ATS Resume Checker"},"datePublished":"2026-05-27","dateModified":"2026-05-27","mainEntityOfPage":"https://hugounoclaw.github.io/ats-checker/guides/how-ats-works.html","image":"https://hugounoclaw.github.io/ats-checker/og.png"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+{"@type":"ListItem","position":1,"name":"Home","item":"https://hugounoclaw.github.io/ats-checker/"},
+{"@type":"ListItem","position":2,"name":"Guides","item":"https://hugounoclaw.github.io/ats-checker/guides/"},
+{"@type":"ListItem","position":3,"name":"How ATS Works","item":"https://hugounoclaw.github.io/ats-checker/guides/how-ats-works.html"}
+]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Does an ATS automatically reject resumes?","acceptedAnswer":{"@type":"Answer","text":"Rarely on its own. Most ATS platforms are a database and search tool — they parse and store resumes and rank them, but a recruiter decides who to advance. The exception is explicit knockout questions (e.g. work authorization) that a recruiter configures, which can auto-disqualify. The bigger risk is invisibility: if your resume parses badly, you never surface in the recruiter's search."}},
+{"@type":"Question","name":"Do ATS use AI to read resumes in 2026?","acceptedAnswer":{"@type":"Answer","text":"Some do, some don't. Older systems like Taleo rely on literal keyword and Boolean matching with no synonym understanding. Modern platforms like Workday, Ashby, and newer Greenhouse and iCIMS features add machine-learning skill inference and semantic matching that can recognize related terms. The exact internals are mostly proprietary and not published."}},
+{"@type":"Question","name":"What is resume parsing?","acceptedAnswer":{"@type":"Answer","text":"Parsing is the step where the ATS converts your document into structured data. It extracts the raw text, detects sections like Experience and Education, and uses named-entity recognition to label pieces as a job title, company, date, or skill. The output is a candidate profile the system can search and score."}},
+{"@type":"Question","name":"Does keyword density matter for ATS?","acceptedAnswer":{"@type":"Answer","text":"Presence matters far more than density. A skill that appears once in a clearly labelled Skills section and once in context beats the same word stuffed ten times. Keyword stuffing can also be flagged by recruiters reading the resume. Aim for natural inclusion of the exact terms from the job description."}},
+{"@type":"Question","name":"Will a PDF parse correctly in an ATS?","acceptedAnswer":{"@type":"Answer","text":"A text-selectable PDF usually parses fine. An image-based or scanned PDF does not — the system has to fall back to OCR, which is error-prone, and many parsers extract little or nothing. The test: open the PDF and try to highlight the text. If you can select it, the parser can read it."}},
+{"@type":"Question","name":"How does synonym expansion work in modern ATS?","acceptedAnswer":{"@type":"Answer","text":"Newer systems map related terms to a shared concept — so 'JS' and 'JavaScript', or 'managed a team' and 'team leadership', can match even without identical wording. This is done with a skills taxonomy or with semantic embeddings that place similar phrases near each other in vector space. Older keyword-only systems do not do this, so exact terms still matter."}},
+{"@type":"Question","name":"Can I see the score an ATS gives me?","acceptedAnswer":{"@type":"Answer","text":"No. Any internal match score or ranking is visible to the recruiter, not the candidate. Third-party checkers (including this one) estimate how well your resume parses and matches a job description, but they are simulations — no public ATS exposes its real score to applicants."}}
+]}
+</script>
+<style>
+:root{--bg:#0d1117;--panel:#161b22;--panel2:#1c2230;--line:#2a313c;--txt:#e6edf3;--muted:#9aa7b5;--accent:#1f6feb;--accent2:#58a6ff;--radius:14px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:28px 20px 60px}
+nav.bc{font-size:.85rem;color:var(--muted);margin-bottom:18px}
+nav.bc a{color:var(--accent2);text-decoration:none}
+h1{font-size:2rem;line-height:1.25;margin:.2em 0 .3em}
+h2{font-size:1.4rem;margin:1.7em 0 .4em}
+h3{font-size:1.12rem;margin:1.3em 0 .3em}
+.meta{color:var(--muted);font-size:.9rem;margin-bottom:24px}
+p,li{color:#dbe6f3}
+a{color:var(--accent2)}
+blockquote{border-left:3px solid var(--accent);margin:18px 0;padding:6px 16px;background:var(--panel);border-radius:0 10px 10px 0;color:#c9d6e5}
+table.cmp{width:100%;border-collapse:collapse;margin:18px 0;font-size:.92rem}
+table.cmp th,table.cmp td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+table.cmp th{background:var(--panel);color:#fff}
+.good{color:#3fb950}.bad{color:#f85149}
+.tldr{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:14px 20px;margin:22px 0}
+.tldr h2{margin:.1em 0 .3em;font-size:1.1rem}
+.tldr ul{margin:.3em 0}
+.tool{background:linear-gradient(135deg,#13233f,#1b2b4a);border:1px solid #2c4673;border-radius:var(--radius);padding:22px;margin:28px 0;text-align:center}
+.tool h3{margin:.2em 0;font-size:1.2rem}
+.btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;padding:12px 22px;font-weight:700;border-radius:10px;margin-top:10px}
+.btn:hover{background:#388bfd}
+.btn.alt{background:transparent;border:1px solid var(--accent)}
+.cta{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin:28px 0}
+pre{background:#0a0e14;border:1px solid var(--line);border-radius:10px;padding:16px;overflow-x:auto;margin:18px 0;font-size:.86rem;line-height:1.55}
+code{font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace}
+pre code{color:#c9d6e5}
+.tok-k{color:#ff7b72}.tok-fn{color:#d2a8ff}.tok-s{color:#a5d6ff}.tok-c{color:#8b949e;font-style:italic}.tok-n{color:#79c0ff}
+.pipe{display:flex;flex-wrap:wrap;align-items:stretch;gap:0;margin:22px 0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.pipe .stage{flex:1 1 0;min-width:120px;background:var(--panel);padding:14px 12px;text-align:center;border-right:1px solid var(--line);position:relative}
+.pipe .stage:last-child{border-right:none}
+.pipe .stage .n{display:inline-block;width:22px;height:22px;line-height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:.8rem;font-weight:700;margin-bottom:6px}
+.pipe .stage .t{font-weight:700;color:#fff;font-size:.95rem}
+.pipe .stage .d{color:var(--muted);font-size:.78rem;margin-top:4px;line-height:1.4}
+.tag{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:20px;vertical-align:middle;margin-left:6px}
+.tag.doc{background:#16361f;color:#3fb950;border:1px solid #2a5a36}
+.tag.est{background:#3a2a12;color:#e3a008;border:1px solid #5c4416}
+footer{margin-top:48px;border-top:1px solid var(--line);padding-top:20px;color:var(--muted);font-size:.85rem;text-align:center}
+footer a{color:var(--accent2)}
+details{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:10px 0}
+summary{cursor:pointer;font-weight:600;color:#fff}
+@media(max-width:560px){h1{font-size:1.55rem}.wrap{padding:20px 16px 40px}.pipe{flex-direction:column}.pipe .stage{border-right:none;border-bottom:1px solid var(--line)}.pipe .stage:last-child{border-bottom:none}}
+</style>
+</head>
+<body>
+<div style="background:linear-gradient(90deg,#1f6feb,#3a9d4d);color:#fff;text-align:center;padding:8px 12px;font:600 .92rem -apple-system,sans-serif;border-bottom:1px solid rgba(255,255,255,.2)">
+💚 This is free + open source. <a href="https://hugoclaw.gumroad.com/l/ats-quick-fixes" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline">Tip $1–3 on Gumroad (PWYW)</a> · <a href="https://github.com/hugounoclaw/ats-checker" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline">⭐ Star repo</a>
+</div>
+
+<div class="wrap">
+<nav class="bc"><a href="../">ATS Resume Checker</a> › <a href="./">Guides</a> › How ATS Works</nav>
+
+<h1>How ATS Systems Actually Work (2026) — A Technical Breakdown</h1>
+<p class="meta">Updated May 2026 · ~13 min read · by hugounoclaw</p>
+
+<p>"Applicant Tracking System" is one of the most misunderstood pieces of software in the job market. Career advice treats it like a black-box robot that shreds 75% of resumes on sight; vendors describe it in glossy abstractions about "AI-powered talent intelligence." The truth sits in between. An ATS is, at its core, a <strong>document pipeline plus a search engine</strong>: it turns your uploaded file into structured data, stores it, and helps a recruiter find and rank candidates. This article walks through that pipeline stage by stage, names the real techniques involved, and is honest about which vendor details are documented versus inferred — because for most proprietary systems, the internals simply aren't public.</p>
+
+<div class="tldr">
+<h2>TL;DR</h2>
+<ul>
+<li>An ATS processes your resume in five stages: <strong>Ingest → Parse → Normalize → Match → Rank</strong>. Most "ATS rejections" are really failures in the first two stages — your resume never became clean, searchable data.</li>
+<li><strong>Parsing</strong> uses text extraction, layout analysis, section detection, and named-entity recognition (NER) to label your title, employers, dates, and skills. Image-based PDFs force an unreliable OCR fallback.</li>
+<li><strong>Matching</strong> ranges from literal keyword/Boolean search (older systems like Taleo) to semantic embeddings and skill-graph inference that understand synonyms (Workday, Ashby, newer Greenhouse/iCIMS features).</li>
+<li>Keyword <em>presence</em> in the right section beats keyword <em>density</em>. Exact terms from the job description still matter because not every system expands synonyms.</li>
+<li>The single highest-leverage thing you can do is make sure your resume <strong>parses cleanly</strong>. <a href="../?from=guide-howats-tldr">Use our free ATS checker</a> to see how yours imports.</li>
+</ul>
+</div>
+
+<div class="tool">
+  <h3>See your resume the way the parser does</h3>
+  <p>Before the theory — run your resume through the free, in-browser checker. It shows how cleanly you parse, which sections were detected, and where you lose keyword matches. Nothing is uploaded.</p>
+  <a class="btn" href="../?from=guide-howats-top">Check my resume free →</a>
+</div>
+
+<h2>Section 1 — The five stages of ATS processing</h2>
+<p>Almost every ATS, from a 20-year-old enterprise install to a 2024-vintage startup product, moves your application through the same conceptual pipeline. The labels differ between vendors, but the stages are remarkably consistent:</p>
+
+<div class="pipe" role="img" aria-label="Five-stage ATS pipeline: Ingest, Parse, Normalize, Match, Rank">
+  <div class="stage"><span class="n">1</span><div class="t">Ingest</div><div class="d">Receive the file &amp; form fields; detect type</div></div>
+  <div class="stage"><span class="n">2</span><div class="t">Parse</div><div class="d">Extract text, detect sections, label entities</div></div>
+  <div class="stage"><span class="n">3</span><div class="t">Normalize</div><div class="d">Clean, standardize dates, map to a schema</div></div>
+  <div class="stage"><span class="n">4</span><div class="t">Match</div><div class="d">Compare to the job: keywords or embeddings</div></div>
+  <div class="stage"><span class="n">5</span><div class="t">Rank</div><div class="d">Score, sort, surface to the recruiter</div></div>
+</div>
+
+<h3>Stage 1: Ingest</h3>
+<p>When you hit submit, the system receives two things: the <strong>structured form data</strong> you typed into the portal (name, email, the answers to screening questions) and your <strong>uploaded file</strong> (.docx, .pdf, sometimes .txt or .rtf). The form data is already clean and goes straight into the database. The file is the hard part. The system detects the file type and routes it to the right extractor. This is also where explicit <strong>knockout questions</strong> live — "Are you authorized to work in this country?" or "Do you have 5+ years of X?" A recruiter configures these, and a disqualifying answer can filter you out before any parsing happens. This is the closest thing to the mythical "automatic rejection," and it's driven by the questions you answer, not by an algorithm judging your resume.</p>
+
+<h3>Stage 2: Parse</h3>
+<p>Parsing converts your document into structured fields. This is where the most damage happens, because a resume is a visual artifact and the parser needs to recover its logical structure from layout. We break this down in detail in <a href="#parsing">Section 2</a>. The output is a candidate record with fields like <code>full_name</code>, <code>email</code>, <code>work_history[]</code>, <code>education[]</code>, and <code>skills[]</code> — plus the full raw text, kept for keyword search.</p>
+
+<h3>Stage 3: Normalize</h3>
+<p>Raw parsed values are messy. Normalization standardizes them so they're comparable: dates in "Mar 2023", "03/2023", and "March 2023" all become a single internal format; job titles may be mapped to a canonical taxonomy ("Sr. SWE" → "Senior Software Engineer"); skills are de-duplicated and sometimes mapped to a controlled vocabulary. Systems with a <strong>skills taxonomy</strong> do a lot of work here — this is the step that later lets "JS" match "JavaScript."</p>
+
+<h3>Stage 4: Match</h3>
+<p>Now the system compares your normalized profile to a specific job. The job description is processed into a set of required and preferred terms (or its own embedding). Matching ranges from literal keyword overlap to semantic similarity — covered in <a href="#matching">Section 3</a>. Importantly, matching often happens <em>at search time</em>: a recruiter runs a query and the system scores everyone in the pool against it, rather than scoring you once at submission.</p>
+
+<h3>Stage 5: Rank</h3>
+<p>Finally, candidates are sorted. In a keyword system, that's "how many of my search terms appear, and how recently/prominently." In an ML system, it's a learned relevance score, sometimes shown as a grade or tier. The recruiter sees a ranked list and a snippet showing why you matched. <strong>A human still chooses who advances</strong> — the ranking influences who they look at first, and in a pool of 800 applicants, "first" is a real advantage.</p>
+
+<h2 id="parsing">Section 2 — How parsing actually works</h2>
+<p>Parsing is the stage job seekers most need to understand, because a parsing failure is silent. You won't get an error. Your resume just becomes garbled data that ranks poorly for every search. Here's what's happening under the hood.</p>
+
+<h3>Text extraction</h3>
+<p>First the parser pulls the raw character stream out of the file. For a <code>.docx</code> this is relatively clean — it's structured XML, and text comes out in a fairly reliable order. For a <strong>text-based PDF</strong>, the extractor reads the embedded text objects, but PDFs store text as positioned glyphs, not logical paragraphs, so word and line order has to be reconstructed from x/y coordinates. This is why a two-column layout can interleave: the extractor may read across both columns on the same visual line.</p>
+
+<h3>OCR fallback for image-based PDFs</h3>
+<p>If the file has no embedded text — a scan, a photo, or a Canva-style design exported as a flat image — there's nothing to extract. The system must fall back to <strong>Optical Character Recognition</strong>: running a vision model over the pixels to guess the characters. OCR is far less reliable than reading embedded text; it misreads characters, drops formatting cues used for section detection, and many ATS parsers either skip OCR entirely or do it poorly. The practical takeaway is blunt: if your resume's text can't be highlighted with a cursor, assume the parser sees little or nothing.</p>
+
+<h3>Layout analysis &amp; section detection</h3>
+<p>With text in hand, the parser segments the document into sections. It looks for heading-like lines — short lines, bold or larger font, matching a dictionary of known headings ("Experience", "Work History", "Education", "Skills", "Certifications"). Everything between two headings is assigned to the first. This is why <strong>creative headings break things</strong>: "Where I've Made an Impact" doesn't match the dictionary, so the content under it may be misfiled or dropped. It's also why layout matters so much — if column order scrambled the text in extraction, section boundaries land in the wrong place.</p>
+
+<h3>Named-entity recognition (NER)</h3>
+<p>Within sections, the parser labels spans of text as entities: this is a <em>person name</em>, that's an <em>organization</em>, that's a <em>date</em>, that's a <em>job title</em>, that's a <em>skill</em>. This is <strong>named-entity recognition</strong>, a standard NLP technique. Classic parsers used rule-based patterns and gazetteers (lists of known company names, skills, schools); modern ones use statistical or neural models fine-tuned on resume data. NER is how the system knows "Google" in your experience section is an employer, while "Google Ads" in your skills section is a tool.</p>
+
+<p>Here's simplified pseudocode showing the shape of a parse routine. Real parsers are far more elaborate, but the skeleton is recognizable:</p>
+
+<pre><code><span class="tok-k">def</span> <span class="tok-fn">parse_resume</span>(file):
+    <span class="tok-c"># 1. Get raw text — OCR only if there's no embedded text layer</span>
+    <span class="tok-k">if</span> file.has_text_layer():
+        text, spans = <span class="tok-fn">extract_text_with_positions</span>(file)
+    <span class="tok-k">else</span>:
+        text, spans = <span class="tok-fn">ocr</span>(file)          <span class="tok-c"># lossy fallback — avoid relying on this</span>
+
+    <span class="tok-c"># 2. Reconstruct reading order from x/y coords (columns break this)</span>
+    lines = <span class="tok-fn">order_by_layout</span>(spans)
+
+    <span class="tok-c"># 3. Detect sections by matching heading dictionary</span>
+    sections = {}
+    current = <span class="tok-s">"header"</span>
+    <span class="tok-k">for</span> line <span class="tok-k">in</span> lines:
+        <span class="tok-k">if</span> <span class="tok-fn">looks_like_heading</span>(line) <span class="tok-k">and</span> line.text <span class="tok-k">in</span> KNOWN_HEADINGS:
+            current = <span class="tok-fn">normalize_heading</span>(line.text)   <span class="tok-c"># "Work History" -> "experience"</span>
+        <span class="tok-k">else</span>:
+            sections.<span class="tok-fn">setdefault</span>(current, []).<span class="tok-fn">append</span>(line)
+
+    <span class="tok-c"># 4. Run NER over each section to label entities</span>
+    profile = {<span class="tok-s">"skills"</span>: [], <span class="tok-s">"work_history"</span>: []}
+    <span class="tok-k">for</span> name, body <span class="tok-k">in</span> sections.<span class="tok-fn">items</span>():
+        <span class="tok-k">for</span> ent <span class="tok-k">in</span> <span class="tok-fn">ner</span>(body):
+            <span class="tok-k">if</span> ent.label == <span class="tok-s">"TITLE"</span>:  profile[<span class="tok-s">"work_history"</span>].<span class="tok-fn">append</span>({<span class="tok-s">"title"</span>: ent.text})
+            <span class="tok-k">if</span> ent.label == <span class="tok-s">"ORG"</span>:    <span class="tok-fn">attach_employer</span>(profile, ent.text)
+            <span class="tok-k">if</span> ent.label == <span class="tok-s">"DATE"</span>:   <span class="tok-fn">attach_dates</span>(profile, <span class="tok-fn">normalize_date</span>(ent.text))
+            <span class="tok-k">if</span> ent.label == <span class="tok-s">"SKILL"</span>:  profile[<span class="tok-s">"skills"</span>].<span class="tok-fn">append</span>(ent.text)
+
+    profile[<span class="tok-s">"raw_text"</span>] = text   <span class="tok-c"># kept for full-text keyword search later</span>
+    <span class="tok-k">return</span> profile
+</code></pre>
+
+<p>Notice that <code>raw_text</code> is retained. Even when entity extraction misses something, the full text is usually indexed for keyword search — which is why a skill buried in a weird layout might still be findable, just not properly attributed. For the formatting rules that keep this routine happy, see our <a href="ats-resume-format.html">ATS resume format guide</a>.</p>
+
+<h2 id="matching">Section 3 — How matching works</h2>
+<p>Once you're structured data, the system has to decide how well you fit a job. There are two broad families of techniques, and in 2026 most real products use some blend.</p>
+
+<h3>Keyword matching and TF-IDF</h3>
+<p>The classic approach is lexical: does the resume contain the terms the job is looking for? The simplest version is exact substring search ("does 'Kubernetes' appear?"). A more sophisticated version weights terms using <strong>TF-IDF</strong> (term frequency–inverse document frequency). The idea: a term matters more if it appears often in <em>this</em> document (term frequency) but is rare across <em>all</em> documents (inverse document frequency). So "Kubernetes" is a high-signal match because it's distinctive, while "responsible" or "team" is near-worthless because everyone uses it. TF-IDF is why generic filler does nothing for you and specific, role-defining nouns do a lot.</p>
+<p>Keyword systems also support <strong>Boolean search</strong> — recruiters type queries like <code>("project manager" OR "program manager") AND (agile OR scrum) NOT junior</code> with wildcards and quotes. In these systems you only exist if your literal text matches the query. There is no understanding that "led cross-functional initiatives" is relevant to "program manager."</p>
+
+<h3>Why keyword "density" is the wrong target</h3>
+<p>A persistent myth says you should hit some magic keyword density percentage. In a TF-IDF or modern model, that's not how scoring works, and stuffing backfires: recruiters read the resume and see the spam. What actually helps is <strong>presence and placement</strong> — the exact term appearing once in a labelled Skills block and once in real context (a bullet that shows you using it). To pull the right terms out of a posting, our <a href="../keyword-extractor.html">JD keyword extractor</a> ranks them by importance so you target the high-signal ones.</p>
+
+<h3>Semantic embeddings &amp; synonym expansion</h3>
+<p>Modern systems go beyond literal text using <strong>semantic embeddings</strong>. Both your resume and the job description are converted into dense numeric vectors with a language model (the BERT family of models is the textbook example), such that texts with similar <em>meaning</em> land near each other in vector space. Now "managed a team of engineers" can score as similar to "engineering leadership" even with no shared keywords — the model captures the concept, not the characters. Cosine similarity between the two vectors becomes a match score.</p>
+<p><strong>Synonym expansion</strong> can also be explicit, via a skills taxonomy: the system knows "JS", "JavaScript", and "ECMAScript" are the same node, and "RN" maps to "Registered Nurse." This is the normalization step paying off at match time. The practical implication: in a semantic or taxonomy-backed system you get some credit for related phrasing — but you can't know which system a given employer runs, so leading with the exact terms from the posting is still the safe play, because it wins in <em>both</em> the old and new worlds.</p>
+
+<h2>Section 4 — What the major ATS vendors actually do</h2>
+<p>This is where honesty matters most. <strong>The internal parsing and matching architecture of proprietary ATS platforms is, for the most part, not public.</strong> Vendors publish marketing pages and occasional engineering blogs, but they don't release their parsers or scoring models. Below, claims backed by a vendor's own documentation or engineering posts are marked <span class="tag doc">documented</span>; claims that are reasonable inferences from third-party testing, recruiter reports, or general industry knowledge are marked <span class="tag est">estimate</span>. Treat the estimates as informed, not authoritative.</p>
+
+<table class="cmp">
+<tr><th>Vendor</th><th>Parsing approach</th><th>Matching method</th><th>Market segment</th></tr>
+<tr><td><strong>Workday</strong></td><td>Proprietary parser into a candidate profile <span class="tag est">estimate</span></td><td>ML "Skills Cloud" with skill inference; LLM-based inference per their engineering blog <span class="tag doc">documented</span></td><td>Large enterprise</td></tr>
+<tr><td><strong>Greenhouse</strong></td><td>Text/NER extraction; full-text index <span class="tag est">estimate</span></td><td>Keyword / Boolean recruiter search (exact-string) <span class="tag doc">documented</span>; added AI ranking</td><td>Mid-market / tech</td></tr>
+<tr><td><strong>Lever</strong></td><td>Profile-based parsing <span class="tag est">estimate</span></td><td>AI-assisted ranking &amp; summaries (vendor-marketed) <span class="tag est">estimate</span></td><td>Mid-market / tech</td></tr>
+<tr><td><strong>Taleo</strong> (Oracle)</td><td>Strict proprietary parser; exact headers/dates <span class="tag est">estimate</span></td><td>Keyword + Boolean operators; no synonym understanding <span class="tag doc">documented</span></td><td>Large enterprise (legacy)</td></tr>
+<tr><td><strong>iCIMS</strong></td><td>Parsed profile is the primary record <span class="tag est">estimate</span></td><td>Keyword search + AI scoring features (vendor-marketed) <span class="tag est">estimate</span></td><td>Large enterprise</td></tr>
+<tr><td><strong>BambooHR</strong></td><td>Standard resume parsing <span class="tag est">estimate</span></td><td>Primarily keyword-based filtering <span class="tag est">estimate</span></td><td>SMB</td></tr>
+<tr><td><strong>Ashby</strong></td><td>Automated extraction; PII redacted before AI <span class="tag doc">documented</span></td><td>Semantic AI application review with citations <span class="tag doc">documented</span></td><td>Startups / scale-ups</td></tr>
+</table>
+
+<h3>Workday</h3>
+<p>Workday's <strong>Skills Cloud</strong> is genuinely ML-driven — documented in Workday's own materials, including a 2018 announcement of a "machine-learning-powered Skills Cloud" and a Workday Engineering blog describing an LLM-based <em>skill inference</em> service that maps natural-language phrases (job titles, certifications) to a normalized set of ~55,000 verified skills. So skill inference and a skills graph: documented. The popular specific claim that "Workday uses BERT embeddings since 2023" is an <strong>industry estimate</strong> — BERT-family models are the standard tool for this kind of semantic matching, so it's a reasonable guess, but I found no Workday documentation stating they use BERT, on that date, in candidate matching. Treat the <em>mechanism</em> (ML skill inference) as solid and the <em>specific model/date</em> as inference.</p>
+
+<h3>Greenhouse</h3>
+<p>Greenhouse's recruiter-facing <strong>keyword search</strong> is documented in their own support material — recruiters search resume text for terms, and it works on essentially exact strings (case-insensitive). Greenhouse has more recently added AI ranking features. The detailed description of its parser as a "PDF/DOCX extraction plus NER pipeline" circulates widely in third-party guides but isn't something I'd cite to Greenhouse directly — that specific internal architecture is an <strong>estimate</strong>.</p>
+
+<h3>Lever</h3>
+<p>Lever markets AI-assisted candidate ranking against configurable criteria plus automated summaries. The features are real, but the internal method — embeddings vs. rules vs. an LLM — isn't publicly specified, so the "how" is an <strong>estimate</strong>. Lever is frequently grouped with Greenhouse as a usability-first, tech-company ATS.</p>
+
+<h3>Taleo</h3>
+<p>Taleo (now Oracle) is the legacy enterprise workhorse and the most literal of the bunch. Oracle's own documentation covers <strong>keyword and Boolean search</strong> (AND/OR/NOT, wildcards, quotes) — documented. It's widely reported (estimate, but very consistent across sources and testing) that Taleo does <em>not</em> understand synonyms: "managed projects" won't match a search for "project management." Its parser is also notoriously strict about standard headings and date formats. If you're applying to a large legacy enterprise, assume Taleo-style literal matching and use exact terms.</p>
+
+<h3>iCIMS</h3>
+<p>iCIMS Talent Cloud is a large-enterprise platform where the <strong>parsed profile is the record a recruiter reads</strong>, so parse quality directly drives what they see. iCIMS markets AI ranking/scoring, and it's commonly counted among platforms with active AI candidate ranking. As with most enterprise vendors, the specific matching internals are an <strong>estimate</strong>.</p>
+
+<h3>BambooHR</h3>
+<p>BambooHR is an SMB-focused HR suite with recruiting bolted on. It's best understood as <strong>primarily keyword-based filtering</strong> with straightforward pipeline stages — appropriate for smaller teams, not a heavy AI-matching engine. This characterization is an <strong>estimate</strong> based on its positioning and feature set rather than a published architecture.</p>
+
+<h3>Ashby</h3>
+<p>Ashby is the clearest modern example and, helpfully, the most transparent. Its own AI page documents <strong>AI-assisted application review</strong> that analyzes the semantics of work history, years of experience, and skills (explicitly "instead of just keywords"), assigns tiers, provides <strong>citations</strong> for AI outputs so recruiters can verify them, <strong>redacts PII</strong> before sending resumes to AI models, and does <strong>not train models on customer data</strong> — all documented. Ashby is popular with startups and scale-ups that want analytics-heavy, AI-assisted screening.</p>
+
+<blockquote>The honest summary: a handful of mechanisms are documented (Workday's ML skill inference, Taleo's Boolean search, Ashby's semantic review), but no major vendor publishes the parser or scoring model that decides your fate. Anyone claiming to know the exact algorithm of a closed enterprise ATS is guessing — usefully or not.</blockquote>
+
+<h2>Section 5 — What this means for your resume</h2>
+<p>Translate the pipeline into actions. Each of these maps directly to a stage above:</p>
+<ul>
+<li><strong>Win the parse (stages 2–3).</strong> Single-column layout, standard headings, real text (not images), consistent date formats, contact info in the body. This is the highest-leverage work because a parse failure poisons every later stage. The full checklist is in our <a href="ats-resume-format.html">ATS resume format guide</a>.</li>
+<li><strong>Feed the matcher the right terms (stage 4).</strong> Pull the exact skills and titles from each job description and include them naturally — once in a labelled Skills section, once in context. Lead with the literal phrasing from the posting so you win in keyword systems <em>and</em> semantic ones. Our <a href="../keyword-extractor.html">JD keyword extractor</a> ranks a posting's terms by importance.</li>
+<li><strong>Spell out acronyms both ways.</strong> Write "SQL (Structured Query Language)" and "Registered Nurse (RN)" so you match whichever variant a recruiter searches — this hedges against systems that don't expand synonyms.</li>
+<li><strong>Make impact searchable, not just decorative.</strong> "Cut deployment time 40% by introducing CI/CD" contains role-defining nouns a TF-IDF or semantic matcher rewards, and reads well to the human at the end.</li>
+<li><strong>Don't chase density.</strong> Presence and placement beat repetition. Stuffing the same term ten times helps nothing and hurts with the recruiter.</li>
+</ul>
+
+<div class="tool">
+  <h3>Pressure-test all of this on your actual resume</h3>
+  <p><a href="../?from=guide-howats-mid">Use our free ATS checker</a> to see which sections were detected, how you parse, and which job-description keywords you're missing — then fix the highest-impact items first.</p>
+  <a class="btn" href="../?from=guide-howats-mid2">Run the free check →</a>
+  <a class="btn alt" href="../best-ats-resume-checkers.html">Compare ATS checkers</a>
+</div>
+
+<h2>Section 6 — Common myths, debunked</h2>
+
+<h3>Myth 1: "An ATS auto-rejects 75% of resumes."</h3>
+<p>The pipeline shows why this is mostly false. The ATS ranks and stores; a recruiter decides. The real attrition comes from (a) explicit knockout questions you answer, and (b) ranking low and never getting looked at in a deep pool. There's no algorithm sitting in judgment auto-trashing three of every four resumes.</p>
+
+<h3>Myth 2: "Hidden white-text keywords trick the ATS."</h3>
+<p>Don't. The parser extracts all the text regardless of color, so white-on-white keywords <em>are</em> read — and then a human opens the document, sees the spam (or selects the text), and you're done. It's a known trick that recruiters screen for. High risk, no durable upside.</p>
+
+<h3>Myth 3: "You need exactly the right keyword density."</h3>
+<p>Covered above: TF-IDF and semantic models don't reward a density ratio, and stuffing reads badly to humans. Optimize for presence in the right place, not a percentage.</p>
+
+<h3>Myth 4: "PDFs always break ATS / never use a PDF."</h3>
+<p>A <em>text-selectable</em> PDF parses fine in most modern systems. The thing that breaks is an <em>image-based</em> PDF (a scan or flat export) that forces OCR. .docx is still the safest universal choice for portals, but "never PDF" is outdated.</p>
+
+<h3>Myth 5: "ATS and AI understand everything I mean."</h3>
+<p>Also false, in the other direction. Plenty of deployed systems — especially legacy enterprise installs like Taleo — do pure keyword matching with no synonym understanding at all. Assuming the machine will infer that "ran the books" means "accounting" is risky. Use the explicit term.</p>
+
+<h2>The bottom line</h2>
+<p>An ATS isn't a gatekeeper robot and it isn't a mind-reader. It's a pipeline that turns your document into searchable, scoreable data and helps a human triage a pile of applicants. You can't control which vendor an employer runs or see your score — but you can control whether you parse cleanly and whether you carry the exact language of the job. Get those two right and you'll surface in front of the human who actually makes the call. Start by <a href="../?from=guide-howats-bottom">running your resume through the free checker</a>, then tighten your <a href="ats-resume-format.html">format</a> and <a href="../keyword-extractor.html">keywords</a>.</p>
+
+<h3>Keep reading</h3>
+<ul>
+<li><a href="ats-resume-format.html">How to Format a Resume for ATS: Step-by-Step Guide (2026)</a></li>
+<li><a href="ats-resume-keywords.html">ATS Resume Keywords: How to Find &amp; Use Them (150+ Examples)</a></li>
+<li><a href="../best-ats-resume-checkers.html">Best ATS Resume Checkers (2026): Honest Comparison</a></li>
+<li><a href="why-resume-not-getting-interviews.html">Why Your Resume Isn't Getting Interviews in 2026</a></li>
+</ul>
+
+<h2>FAQ</h2>
+<details><summary>Does an ATS automatically reject resumes?</summary><p>Rarely on its own. Most ATS platforms are a database and search tool — they parse and store resumes and rank them, but a recruiter decides who to advance. The exception is explicit knockout questions (e.g. work authorization) that a recruiter configures, which can auto-disqualify. The bigger risk is invisibility: if your resume parses badly, you never surface in the recruiter's search.</p></details>
+<details><summary>Do ATS use AI to read resumes in 2026?</summary><p>Some do, some don't. Older systems like Taleo rely on literal keyword and Boolean matching with no synonym understanding. Modern platforms like Workday, Ashby, and newer Greenhouse and iCIMS features add machine-learning skill inference and semantic matching that can recognize related terms. The exact internals are mostly proprietary and not published.</p></details>
+<details><summary>What is resume parsing?</summary><p>Parsing is the step where the ATS converts your document into structured data. It extracts the raw text, detects sections like Experience and Education, and uses named-entity recognition to label pieces as a job title, company, date, or skill. The output is a candidate profile the system can search and score.</p></details>
+<details><summary>Does keyword density matter for ATS?</summary><p>Presence matters far more than density. A skill that appears once in a clearly labelled Skills section and once in context beats the same word stuffed ten times. Keyword stuffing can also be flagged by recruiters reading the resume. Aim for natural inclusion of the exact terms from the job description.</p></details>
+<details><summary>Will a PDF parse correctly in an ATS?</summary><p>A text-selectable PDF usually parses fine. An image-based or scanned PDF does not — the system has to fall back to OCR, which is error-prone, and many parsers extract little or nothing. The test: open the PDF and try to highlight the text. If you can select it, the parser can read it.</p></details>
+<details><summary>How does synonym expansion work in modern ATS?</summary><p>Newer systems map related terms to a shared concept — so "JS" and "JavaScript", or "managed a team" and "team leadership", can match even without identical wording. This is done with a skills taxonomy or with semantic embeddings that place similar phrases near each other in vector space. Older keyword-only systems do not do this, so exact terms still matter.</p></details>
+<details><summary>Can I see the score an ATS gives me?</summary><p>No. Any internal match score or ranking is visible to the recruiter, not the candidate. Third-party checkers (including this one) estimate how well your resume parses and matches a job description, but they are simulations — no public ATS exposes its real score to applicants.</p></details>
+
+<p style="text-align:center;color:#9aa7b5;font-size:.9rem;margin:24px 0">⭐ Free + open source. <a href="https://github.com/hugounoclaw/ats-checker" style="color:#58a6ff">Star the repo on GitHub</a> if this helped, so other job seekers can find it.</p>
+<footer>
+  <p><a href="../">← Back to the free ATS Resume Checker</a> · runs 100% in your browser</p>
+  <p><a href="./">All guides</a> · <a href="../keyword-extractor.html">JD Keyword Extractor</a> · <a href="../best-ats-resume-checkers.html">Best ATS Checkers</a></p>
+</footer>
+</div>
+</body>
+</html>
