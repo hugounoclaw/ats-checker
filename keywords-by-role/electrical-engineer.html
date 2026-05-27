@@ -19,6 +19,9 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Article","headline":"ATS Resume Keywords for Electrical Engineer (2026, 20+ Examples)","description":"The 20 ATS resume keywords Electrical Engineers should include in 2026. Pulled from real job descriptions across engineering.","author":{"@type":"Organization","name":"Free ATS Resume Checker"},"datePublished":"2026-05-27","dateModified":"2026-05-27","mainEntityOfPage":"https://hugounoclaw.github.io/ats-checker/keywords-by-role/electrical-engineer.html"}
 </script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Should I list every HDL and design tool I know?","acceptedAnswer":{"@type":"Answer","text":"List the ones you have actually used and that the job description names. Embedded and hardware roles expect Verilog, VHDL, FPGA, and RTOS; power-systems roles usually do not, so extra tools there only dilute your match."}},{"@type":"Question","name":"Do I need a PE or EIT license keyword?","acceptedAnswer":{"@type":"Answer","text":"Only when the posting asks for it, which is common in power, utility, and infrastructure roles. Add the exact term (EIT or PE) on a Licenses or Certifications line."}},{"@type":"Question","name":"Can one resume cover both hardware and embedded roles?","acceptedAnswer":{"@type":"Answer","text":"Not well. Reorder keywords toward PCB design, Altium, and signal integrity for hardware, and toward C/C++, RTOS, and firmware for embedded, then run each job description through the extractor."}}]}
+</script>
 <style>
 :root{--bg:#0d1117;--panel:#161b22;--panel2:#1c2230;--line:#2a313c;--txt:#e6edf3;--muted:#9aa7b5;--accent:#1f6feb;--accent2:#58a6ff;--radius:14px}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
@@ -57,6 +60,29 @@ footer a{color:var(--accent2)}
 <li><strong>For each missing keyword you've genuinely used</strong>, add it inside an experience bullet — not in a "Skills" dump. ATS engines weigh keywords-in-context higher than keyword-stuff.</li>
 <li><strong>Use the JD's exact phrasing</strong>. Iterate until your match score is 80%+.</li>
 </ol>
+<!-- expanded 2026-05-27: added role-specific ATS context, example bullets, rejection reasons, and FAQ + JSON-LD -->
+<h2>What ATS systems actually scan for in an Electrical Engineer resume</h2>
+<p>"Electrical engineer" covers three fairly distinct hiring lanes — power systems, embedded/hardware, and controls — and Applicant Tracking Systems are configured per posting to match the lane's specific toolchain. A hardware role scores you on <strong>Altium Designer</strong>, <strong>PCB design</strong>, and <strong>schematics</strong>; an embedded role on <strong>FPGA</strong>, <strong>Verilog</strong>, <strong>VHDL</strong>, <strong>RTOS</strong>, and <strong>C/C++</strong>; a power or controls role on <strong>power systems</strong>, <strong>control systems</strong>, <strong>MATLAB</strong>/<strong>Simulink</strong>, and <strong>IEEE standards</strong>.</p>
+<p>The most common mistake is one resume that sprays all of these at once. The ATS doesn't reward breadth — it computes overlap with <em>this</em> job description, so a power-systems posting won't credit your Verilog line, and a firmware posting won't credit your IEEE-standards line. Run the posting through the <a href="../keyword-extractor.html">JD keyword extractor</a> first, see which lane it's in, and reorder your skills and bullets to lead with that cluster.</p>
+<p>Tool names also have to be spelled exactly as the JD writes them — "AutoCAD Electrical," "C/C++," "VHDL" — because exact-match is literal. For why context-placed keywords outscore a skills grid, see <a href="../guides/how-ats-works.html">how ATS software actually works</a>.</p>
+<h2>Example bullets that use these keywords naturally</h2>
+<ul>
+<li>Designed multilayer <strong>PCB</strong>s in <strong>Altium Designer</strong>, taking 3 boards from <strong>schematic</strong> capture to fab with first-pass success.</li>
+<li>Developed <strong>FPGA</strong> logic in <strong>Verilog</strong>/<strong>VHDL</strong> for real-time DSP on an <strong>RTOS</strong>-based <strong>embedded system</strong> in <strong>C/C++</strong>.</li>
+<li>Modeled <strong>power systems</strong> and <strong>control systems</strong> in <strong>MATLAB</strong>/<strong>Simulink</strong>, validating designs against <strong>IEEE standards</strong>.</li>
+<li>Performed board bring-up with <strong>oscilloscope</strong> and <strong>multimeter</strong>, ensuring <strong>RoHS compliance</strong> across the BOM.</li>
+</ul>
+<h2>Why Electrical Engineer resumes get auto-rejected</h2>
+<ul>
+<li>Writing "circuit design" generically when the JD names a specific tool like Altium, Cadence, or AutoCAD Electrical.</li>
+<li>Mixing power and embedded keywords on one resume so neither lane reaches the matching threshold.</li>
+<li>Inconsistent tool spelling (e.g., "V.H.D.L." vs "VHDL") that defeats literal exact-match.</li>
+<li>Listing the toolchain only in a skills grid instead of inside project bullets, which both ATS and reviewers weight higher.</li>
+</ul>
+<h2>FAQ: ATS keywords for Electrical Engineers</h2>
+<p><strong>Should I list every HDL and design tool I know?</strong><br>List the ones you've actually used and that the JD names. Embedded and hardware roles expect Verilog, VHDL, FPGA, and RTOS; power-systems roles usually don't, so extra tools there only dilute your match.</p>
+<p><strong>Do I need a PE or EIT license keyword?</strong><br>Only when the posting asks for it — common in power, utility, and infrastructure roles. Add the exact term (EIT or PE) on a Licenses or Certifications line.</p>
+<p><strong>Can one resume cover both hardware and embedded roles?</strong><br>Not well. Lead with PCB design, Altium, and signal integrity for hardware; lead with C/C++, RTOS, and firmware for embedded. Run each JD through the <a href="../keyword-extractor.html">extractor</a> and re-order accordingly.</p>
 <div class="tool"><h3>Check your Electrical Engineer resume against any JD — free</h3>
   <p>Instant 0–100 ATS score + keyword match + prioritized fixes. Runs in your browser, nothing uploaded.</p>
   <a class="btn" href="../?from=keywords-electrical-engineer">Run my resume free →</a></div>
