@@ -88,6 +88,19 @@ footer{margin-top:48px;border-top:1px solid var(--line);padding-top:20px;color:v
 footer a{color:var(--accent2)}
 details{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:10px 0}
 summary{cursor:pointer;font-weight:600;color:#fff}
+/* other-tools sidebar (other Gumroad sellers; non-affiliate direct URLs until affiliate ID provisioned) */
+.otherTools{margin:28px 0;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.otherTools h3{margin:.1em 0 .3em;font-size:1.1rem}
+.otherTools .otherSub{color:var(--muted);font-size:.9rem;margin:0 0 14px}
+.otherTools .otherList{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.otherTools .otherCard{display:block;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;text-decoration:none;color:inherit;transition:border-color .12s}
+.otherTools .otherCard:hover{border-color:var(--accent)}
+.otherTools .otherHead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.otherTools .otherName{font-weight:600;color:var(--txt);font-size:.98rem}
+.otherTools .otherPrice{color:#3fb950;font-weight:700;font-size:.9rem;white-space:nowrap}
+.otherTools .otherMeta{color:var(--muted);font-size:.78rem;margin:2px 0 6px}
+.otherTools .otherDesc{color:#c9d6e5;font-size:.86rem;margin:0;line-height:1.5}
+.otherTools .otherFoot{color:var(--muted);font-size:.75rem;margin:14px 0 0;font-style:italic}
 @media(max-width:560px){h1{font-size:1.55rem}.wrap{padding:20px 16px 40px}}
 </style>
 </head>
@@ -164,6 +177,35 @@ summary{cursor:pointer;font-weight:600;color:#fff}
 <li><strong>Never:</strong> a scanned image, a Canva PNG/JPG, or a design where the text isn't selectable.</li>
 </ul>
 <p><strong>The 5-second test:</strong> open your PDF, try to highlight the text with your cursor. If you can select it, the ATS can read it. If you can't, neither can the parser.</p>
+
+<!-- Other resume tools on Gumroad — other sellers' products, direct URLs (NOT affiliate links). To enable affiliate attribution: replace each href with the Gumroad affiliate URL after Boss's affiliate ID is read from gumroad.com/affiliates. -->
+<section class="otherTools" aria-labelledby="otherToolsTitleFmt">
+  <h3 id="otherToolsTitleFmt">Other resume templates on Gumroad</h3>
+  <p class="otherSub">Don't want to lay it out yourself? Templates built by other creators that already follow most of the rules above.</p>
+  <ul class="otherList">
+    <li><a class="otherCard" href="https://gergelyorosz.gumroad.com/l/pTvVe" target="_blank" rel="noopener external">
+      <div class="otherHead"><span class="otherName">The Tech Resume Inside-Out</span><span class="otherPrice">$20</span></div>
+      <div class="otherMeta">by Gergely Orosz · ★ 4.9 (125 reviews)</div>
+      <p class="otherDesc">A long-running guide on what a strong software-engineer resume actually looks like, with concrete before/after rewrites.</p>
+    </a></li>
+    <li><a class="otherCard" href="https://danishhabib111.gumroad.com/l/tmmev" target="_blank" rel="noopener external">
+      <div class="otherHead"><span class="otherName">Editable ATS Friendly Resume Template</span><span class="otherPrice">$5</span></div>
+      <div class="otherMeta">by Danish Habib · ★ 4.3 (3 reviews)</div>
+      <p class="otherDesc">A budget editable template aimed at the same ATS parsers — fast drop-in if you don't want to rebuild from scratch.</p>
+    </a></li>
+    <li><a class="otherCard" href="https://rachelhow.gumroad.com/l/uxresume" target="_blank" rel="noopener external">
+      <div class="otherHead"><span class="otherName">UI/UX Designer Resume Kit (Figma)</span><span class="otherPrice">$5</span></div>
+      <div class="otherMeta">by Rachel How · ★ 4.9 (46 reviews)</div>
+      <p class="otherDesc">Figma resume templates aimed at UI/UX and product-design roles, with portfolio-link slots.</p>
+    </a></li>
+    <li><a class="otherCard" href="https://stephenkelman.gumroad.com/l/formatcv" target="_blank" rel="noopener external">
+      <div class="otherHead"><span class="otherName">A4 / US Letter CV Templates (InDesign)</span><span class="otherPrice">$17</span></div>
+      <div class="otherMeta">by Stephen Kelman · ★ 5.0 (13 reviews)</div>
+      <p class="otherDesc">Adobe InDesign resume/CV templates if you're comfortable in InDesign and want full layout control.</p>
+    </a></li>
+  </ul>
+  <p class="otherFoot">External products on Gumroad — we're not the seller. Independent picks, not paid placements.</p>
+</section>
 
 <div class="cta">
   <h3>Don't rebuild the layout from scratch</h3>
