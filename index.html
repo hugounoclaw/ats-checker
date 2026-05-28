@@ -142,6 +142,19 @@ details{background:var(--panel);border:1px solid var(--line);border-radius:10px;
 summary{cursor:pointer;font-weight:600}
 footer{margin-top:48px;text-align:center;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padding-top:22px}
 a{color:var(--accent2)}
+/* other-tools sidebar (other Gumroad sellers; non-affiliate direct URLs until affiliate ID provisioned) */
+.otherTools{margin-top:26px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.otherTools h3{margin:.1em 0 .3em;font-size:1.1rem}
+.otherTools .otherSub{color:var(--muted);font-size:.9rem;margin:0 0 14px}
+.otherTools .otherList{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.otherTools .otherCard{display:block;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;text-decoration:none;color:inherit;transition:border-color .12s}
+.otherTools .otherCard:hover{border-color:var(--accent)}
+.otherTools .otherHead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.otherTools .otherName{font-weight:600;color:var(--txt);font-size:.98rem}
+.otherTools .otherPrice{color:#4ac26b;font-weight:700;font-size:.9rem;white-space:nowrap}
+.otherTools .otherMeta{color:var(--muted);font-size:.78rem;margin:2px 0 6px}
+.otherTools .otherDesc{color:#c9d6e5;font-size:.86rem;margin:0;line-height:1.5}
+.otherTools .otherFoot{color:var(--muted);font-size:.75rem;margin:14px 0 0;font-style:italic}
 @media(max-width:560px){h1{font-size:1.6rem}.ring{width:104px;height:104px}}
 </style>
 </head>
@@ -201,6 +214,35 @@ a{color:var(--accent2)}
   <p>The 18 highest-leverage tweaks to add 20+ points to your score in 30 minutes. One-page printable. No upsell.</p>
   <a class="btn" href="downloads/ATS_Quick_Fixes_Checklist.pdf" download style="background:#2e7d32;margin-right:8px">📥 Download PDF directly (no email)</a> <a class="btn" href="https://hugoclaw.gumroad.com/l/ats-quick-fixes" target="_blank" rel="noopener" style="background:#2e7d32">Gumroad page (email captured)</a>
 </div>
+
+<!-- Other resume tools on Gumroad — other sellers' products, direct URLs (NOT affiliate links). To enable affiliate attribution: replace each href with the Gumroad affiliate URL after Boss's affiliate ID is read from gumroad.com/affiliates. -->
+<section class="otherTools" aria-labelledby="otherToolsTitle">
+  <h3 id="otherToolsTitle">Other resume tools on Gumroad</h3>
+  <p class="otherSub">Built by other creators. Worth a look if our free checker got you started.</p>
+  <ul class="otherList">
+    <li><a class="otherCard" href="https://gergelyorosz.gumroad.com/l/pTvVe" target="_blank" rel="noopener external">
+      <div class="otherHead"><span class="otherName">The Tech Resume Inside-Out</span><span class="otherPrice">$20</span></div>
+      <div class="otherMeta">by Gergely Orosz · ★ 4.9 (125 reviews)</div>
+      <p class="otherDesc">A long-running guide on what a strong software-engineer resume actually looks like, with concrete before/after rewrites and hiring-manager scan patterns.</p>
+    </a></li>
+    <li><a class="otherCard" href="https://danishhabib111.gumroad.com/l/tmmev" target="_blank" rel="noopener external">
+      <div class="otherHead"><span class="otherName">Editable ATS Friendly Resume Template</span><span class="otherPrice">$5</span></div>
+      <div class="otherMeta">by Danish Habib · ★ 4.3 (3 reviews)</div>
+      <p class="otherDesc">A budget editable template aimed at the same ATS parsers this checker scores against — fast drop-in if you don't want to rebuild from scratch.</p>
+    </a></li>
+    <li><a class="otherCard" href="https://rachelhow.gumroad.com/l/uxresume" target="_blank" rel="noopener external">
+      <div class="otherHead"><span class="otherName">UI/UX Designer Resume Kit (Figma)</span><span class="otherPrice">$5</span></div>
+      <div class="otherMeta">by Rachel How · ★ 4.9 (46 reviews)</div>
+      <p class="otherDesc">Figma resume templates aimed at UI/UX and product-design roles, with built-in portfolio-link slots. Closest fit if you already live in Figma.</p>
+    </a></li>
+    <li><a class="otherCard" href="https://stephenkelman.gumroad.com/l/formatcv" target="_blank" rel="noopener external">
+      <div class="otherHead"><span class="otherName">A4 / US Letter CV Templates (InDesign)</span><span class="otherPrice">$17</span></div>
+      <div class="otherMeta">by Stephen Kelman · ★ 5.0 (13 reviews)</div>
+      <p class="otherDesc">Adobe InDesign resume/CV templates for full layout control. Best if you're comfortable in InDesign and want a designer-grade master file.</p>
+    </a></li>
+  </ul>
+  <p class="otherFoot">External products on Gumroad — we're not the seller. Independent picks, not paid placements.</p>
+</section>
 
 <div class="cta" id="cta">
   <div class="price">Free checker got you a number. This gets you the offer.</div>
