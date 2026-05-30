@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232ea043'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<title>Free Job Application Tracker with ATS Match — No Signup | ATS Checker</title>
+<meta name="description" content="Track every job application in one place and see each one's ATS match score. Free, private, runs in your browser — no signup, nothing uploaded. Export to CSV anytime.">
+<meta name="keywords" content="job application tracker, ATS job tracker, job search tracker, application tracker template, free job tracker, job hunt spreadsheet">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#1f6feb">
+<link rel="canonical" href="https://hugounoclaw.github.io/ats-checker/job-tracker.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Free Job Application Tracker with per-application ATS Match">
+<meta property="og:description" content="Track every application and see each one's ATS match score. Free, private, in-browser. Export to CSV anytime.">
+<meta property="og:url" content="https://hugounoclaw.github.io/ats-checker/job-tracker.html">
+<meta property="og:image" content="https://hugounoclaw.github.io/ats-checker/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free Job Application Tracker with ATS Match">
+<meta name="twitter:description" content="Track every application and see each one's ATS match score. Free, private, in-browser.">
+<meta name="twitter:image" content="https://hugounoclaw.github.io/ats-checker/og.png">
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"WebApplication",
+  "name":"ATS Checker Job Application Tracker",
+  "applicationCategory":"BusinessApplication",
+  "operatingSystem":"Any (web browser)",
+  "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
+  "description":"Free job application tracker that shows a per-application ATS match score. Runs entirely in your browser, no signup, export to CSV.",
+  "url":"https://hugounoclaw.github.io/ats-checker/job-tracker.html",
+  "featureList":["Track applications by status","Per-application ATS match score","Missing keyword detection","CSV export and import","100% client-side and private"]
+}
+</script>
+<style>
+:root{
+  --bg:#0d1117; --panel:#161b22; --panel2:#1c2230; --line:#2a313c;
+  --txt:#e6edf3; --muted:#9aa7b4; --accent:#1f6feb; --accent2:#388bfd;
+  --good:#2ea043; --warn:#d29922; --bad:#da3633; --radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg);color:var(--txt);line-height:1.6}
+a{color:var(--accent2);text-decoration:none}
+.wrap{max-width:1040px;margin:0 auto;padding:0 18px 64px}
+.topbar{background:linear-gradient(90deg,#1f6feb,#3a9d4d);color:#fff;text-align:center;padding:8px 12px;font:600 .92rem -apple-system,sans-serif;border-bottom:1px solid rgba(255,255,255,.2)}
+.topbar a{color:#fff;text-decoration:underline}
+header.hero{text-align:center;padding:46px 0 18px}
+h1{font-size:2.1rem;margin:.2em 0;line-height:1.18;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:1.06rem;max-width:660px;margin:0 auto}
+.badge{display:inline-block;background:rgba(46,160,67,.12);color:#4ac26b;border:1px solid rgba(46,160,67,.4);
+  font-size:.78rem;padding:3px 10px;border-radius:999px;margin-top:12px}
+.btn{display:inline-block;background:var(--accent);color:#fff;border:none;padding:12px 20px;font-size:1rem;
+  font-weight:700;border-radius:10px;cursor:pointer}
+.btn:hover{background:var(--accent2)}
+.btn.sm{padding:8px 14px;font-size:.88rem}
+.btn.ghost{background:transparent;border:1px solid var(--accent);color:var(--accent2)}
+.btn.cta{border-radius:999px;padding:13px 26px;margin-top:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-top:18px}
+textarea,input,select{background:var(--bg);color:var(--txt);border:1px solid var(--line);border-radius:10px;
+  padding:11px;font-size:.95rem;font-family:inherit}
+textarea{width:100%;min-height:120px;resize:vertical}
+input,select{width:100%}
+button{cursor:pointer;font-family:inherit}
+.muted{color:var(--muted)} .small{font-size:.85rem}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.grid-form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label.fld{display:block;font-size:.74rem;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{text-align:left;padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+tr:hover td{background:rgba(255,255,255,.02)}
+.badge2{display:inline-block;border-radius:999px;padding:3px 11px;font-size:.78rem;font-weight:600;border:1px solid var(--line)}
+.st-Saved{background:#1c2230;color:var(--muted)}
+.st-Applied{background:rgba(56,139,253,.16);color:#bfdbfe;border-color:#34507f}
+.st-Interview{background:rgba(210,153,34,.16);color:#fde68a;border-color:#7d6320}
+.st-Offer{background:rgba(46,160,67,.16);color:#a7f3d0;border-color:#2b7d4f}
+.st-Rejected{background:rgba(218,54,51,.14);color:#fecaca;border-color:#7d3633}
+.match{font-weight:800;font-size:1.05rem}
+.match.good{color:var(--good)}.match.mid{color:var(--warn)}.match.low{color:var(--bad)}
+.kw{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:3px 9px;margin:3px 3px 0 0;font-size:.75rem}
+.kw.miss{border-color:rgba(218,54,51,.5);color:#ff8480}
+.tbl-wrap{overflow-x:auto;margin-top:16px}
+.empty{text-align:center;color:var(--muted);padding:38px 10px}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.62);display:none;align-items:flex-start;justify-content:center;padding:38px 16px;overflow:auto;z-index:50}
+.modal-bg.on{display:flex}
+.modal{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px;max-width:680px;width:100%}
+.iconbtn{background:transparent;border:none;color:var(--muted);font-size:1rem;padding:4px 7px;border-radius:7px}
+.iconbtn:hover{background:var(--panel2);color:var(--txt)}
+.pill{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:5px 12px;margin:2px;font-size:.82rem;cursor:pointer}
+.pill.on{border-color:var(--accent);color:var(--accent2)}
+.stat{font-size:1.55rem;font-weight:800}
+.cta-card{background:linear-gradient(135deg,#13233f,#1b2b4a);border:1px solid #2c4673;border-radius:var(--radius);padding:24px;margin-top:24px;text-align:center}
+footer{margin-top:44px;text-align:center;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padding-top:22px}
+@media(max-width:640px){.grid-form{grid-template-columns:1fr}h1{font-size:1.6rem}.hide-sm{display:none}}
+</style>
+</head>
+<body>
+
+<div class="topbar">💚 Free + open source. <a href="https://github.com/hugounoclaw/ats-checker" target="_blank" rel="noopener">⭐ Star the repo</a> · <a href="./">Free ATS Checker</a></div>
+
+<div class="wrap">
+
+<header class="hero">
+  <h1>Free <span style="color:var(--good)">Job Application Tracker</span><br>with ATS match built in</h1>
+  <p class="sub">Most trackers just list your applications. This one shows the <strong>ATS match score</strong> for each job — so you know which ones deserve a tailored resume. 100% free, runs in your browser, nothing uploaded.</p>
+  <div class="badge">🔒 100% private — your data never leaves your browser</div>
+  <div><a class="btn cta" href="#app">Start tracking — it's free →</a></div>
+  <p style="margin-top:10px"><a href="./" class="small">Or score a single resume with the ATS Checker →</a></p>
+</header>
+
+<main id="app">
+
+  <div class="card" style="display:flex;justify-content:space-around;text-align:center;flex-wrap:wrap;gap:16px">
+    <div><div class="stat" id="s-total">0</div><div class="small muted">Total</div></div>
+    <div><div class="stat" id="s-applied">0</div><div class="small muted">Applied</div></div>
+    <div><div class="stat" id="s-interview">0</div><div class="small muted">Interview</div></div>
+    <div><div class="stat" id="s-offer">0</div><div class="small muted">Offer</div></div>
+    <div><div class="stat" id="s-avg">—</div><div class="small muted">Avg ATS match</div></div>
+  </div>
+
+  <div class="card">
+    <div class="row" style="justify-content:space-between">
+      <div>
+        <h3 style="margin-bottom:4px">Your résumé <span class="small muted" id="resume-state">— not saved yet</span></h3>
+        <p class="small muted">Paste it once. Stored only in this browser and reused to score every application's ATS match.</p>
+      </div>
+      <button class="btn ghost sm" id="toggle-resume">Edit résumé</button>
+    </div>
+    <div id="resume-edit" style="display:none;margin-top:14px">
+      <textarea id="resume" placeholder="Paste your résumé text here (plain text is fine)..."></textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn sm" id="save-resume">Save résumé</button>
+        <span class="small muted">Never uploaded. Clear it by editing and saving empty.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row" style="justify-content:space-between">
+      <div class="row" id="filters">
+        <span class="pill on" data-f="All">All</span>
+        <span class="pill" data-f="Saved">Saved</span>
+        <span class="pill" data-f="Applied">Applied</span>
+        <span class="pill" data-f="Interview">Interview</span>
+        <span class="pill" data-f="Offer">Offer</span>
+        <span class="pill" data-f="Rejected">Rejected</span>
+      </div>
+      <div class="row">
+        <button class="btn sm" id="add">+ Add application</button>
+        <button class="btn ghost sm" id="export">Export CSV</button>
+        <button class="btn ghost sm" id="import-btn">Import CSV</button>
+        <input type="file" id="import" accept=".csv" style="display:none">
+      </div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Company</th><th>Role</th><th>Status</th>
+          <th class="hide-sm">Date</th><th>ATS match</th><th></th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div class="empty" id="empty">No applications yet. Click <strong>+ Add application</strong> to start, or import a CSV.</div>
+    </div>
+  </div>
+
+  <div class="cta-card">
+    <h3 style="margin-bottom:8px">Low ATS match on a job you want?</h3>
+    <p class="muted small" style="margin:0 auto 16px;max-width:560px">Get 3 ATS-optimized résumé templates + a 150+ keyword cheat-sheet + cover-letter prompt so your next application clears the filter.</p>
+    <a class="btn cta" href="https://hugoclaw.gumroad.com/l/ats-kit?from=tracker" target="_blank" rel="noopener">Get the ATS Kit →</a>
+    <p class="small muted" style="margin-top:16px"><a href="./">Free ATS Checker</a> · <a href="guides/">Free guides</a> · <a href="keywords-by-role/">Keywords by role</a></p>
+  </div>
+
+</main>
+
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <div class="row" style="justify-content:space-between;margin-bottom:14px">
+      <h3 id="modal-title">Add application</h3>
+      <button class="iconbtn" id="modal-close">✕</button>
+    </div>
+    <div class="grid-form">
+      <div><label class="fld">Company</label><input id="m-company" placeholder="Acme Inc."></div>
+      <div><label class="fld">Role</label><input id="m-role" placeholder="Senior Software Engineer"></div>
+      <div><label class="fld">Status</label>
+        <select id="m-status">
+          <option>Saved</option><option>Applied</option><option>Interview</option><option>Offer</option><option>Rejected</option>
+        </select></div>
+      <div><label class="fld">Date</label><input id="m-date" type="date"></div>
+      <div style="grid-column:1/-1"><label class="fld">Job post URL</label><input id="m-url" placeholder="https://..."></div>
+      <div style="grid-column:1/-1"><label class="fld">Notes</label><textarea id="m-notes" style="min-height:64px" placeholder="Recruiter name, salary, next step..."></textarea></div>
+      <div style="grid-column:1/-1">
+        <label class="fld">Job description — paste to compute ATS match</label>
+        <textarea id="m-jd" style="min-height:110px" placeholder="Paste the full job description here. We compare it against your saved résumé locally."></textarea>
+      </div>
+    </div>
+    <div id="m-matchpreview" class="small" style="margin-top:12px"></div>
+    <div class="row" style="margin-top:16px;justify-content:flex-end">
+      <button class="btn ghost sm" id="m-cancel">Cancel</button>
+      <button class="btn sm" id="m-save">Save application</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>ATS Checker · Free forever · Your data never leaves your browser</p>
+  <p style="margin-top:8px"><a href="./">ATS Checker</a> · <a href="job-tracker.html">Job Tracker</a> · <a href="guides/">Guides</a> · <a href="jobs/">Jobs</a> · <a href="keywords-by-role/">Keywords</a></p>
+</footer>
+
+</div>
+
+<script type="module">
+// Reuses the same scoring core as the main checker (assets/score.js).
+import { analyze } from './assets/score.js';
+const $=s=>document.querySelector(s);
+const $$=s=>document.querySelectorAll(s);
+
+const LS_APPS='jat_apps', LS_RESUME='jat_resume';
+let apps=load(LS_APPS,[]);
+let resume=localStorage.getItem(LS_RESUME)||'';
+let filter='All';
+let editId=null;
+
+function load(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}}
+function save(){localStorage.setItem(LS_APPS,JSON.stringify(apps))}
+function uid(){return 'a'+Math.random().toString(36).slice(2,9)+Date.now().toString(36)}
+function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+function refreshResumeState(){
+  $('#resume-state').textContent = resume.trim() ? `— saved (${resume.trim().length} chars)` : '— not saved yet';
+}
+$('#toggle-resume').addEventListener('click',()=>{
+  const e=$('#resume-edit'); const open=e.style.display!=='none';
+  e.style.display=open?'none':'block'; if(!open)$('#resume').value=resume;
+});
+$('#save-resume').addEventListener('click',()=>{
+  resume=$('#resume').value; localStorage.setItem(LS_RESUME,resume);
+  refreshResumeState(); $('#resume-edit').style.display='none';
+  apps.forEach(a=>{if(a.jd&&a.jd.trim())Object.assign(a,scoreApp(a.jd))});
+  save(); render();
+});
+
+// ---- scoring: reuse analyze() — return shape is {total, cats, kw:{pct,miss,hit}} ----
+function scoreApp(jd){
+  if(!resume.trim()||!jd.trim())return {match:null,missing:[]};
+  try{
+    const r=analyze(resume,jd);
+    const m = (r.kw && typeof r.kw.pct==='number') ? r.kw.pct : r.total;
+    const miss = (r.kw && Array.isArray(r.kw.miss)) ? r.kw.miss : [];
+    return {match:Math.round(m), missing:miss.slice(0,6)};
+  }catch(e){return {match:null,missing:[]}}
+}
+function matchClass(m){return m>=75?'good':m>=50?'mid':'low'}
+
+function openModal(app){
+  editId=app?app.id:null;
+  $('#modal-title').textContent=app?'Edit application':'Add application';
+  $('#m-company').value=app?app.company:'';
+  $('#m-role').value=app?app.role:'';
+  $('#m-status').value=app?app.status:'Saved';
+  $('#m-date').value=app?app.date:new Date().toISOString().slice(0,10);
+  $('#m-url').value=app?app.url:'';
+  $('#m-notes').value=app?app.notes:'';
+  $('#m-jd').value=app?(app.jd||''):'';
+  updatePreview();
+  $('#modal-bg').classList.add('on');
+}
+function closeModal(){$('#modal-bg').classList.remove('on');editId=null}
+function updatePreview(){
+  const jd=$('#m-jd').value;
+  const el=$('#m-matchpreview');
+  if(!resume.trim()){el.innerHTML='<span class="muted">Save your résumé above to see the ATS match for this job.</span>';return;}
+  if(!jd.trim()){el.innerHTML='<span class="muted">Paste the job description to compute the ATS match.</span>';return;}
+  const {match,missing}=scoreApp(jd);
+  let h=`ATS match: <span class="match ${matchClass(match)}">${match}%</span>`;
+  if(missing.length){h+='<div style="margin-top:6px">Top missing: '+missing.map(k=>`<span class="kw miss">${esc(k)}</span>`).join('')+'</div>';}
+  el.innerHTML=h;
+}
+$('#m-jd').addEventListener('input',updatePreview);
+$('#add').addEventListener('click',()=>openModal(null));
+$('#modal-close').addEventListener('click',closeModal);
+$('#m-cancel').addEventListener('click',closeModal);
+$('#modal-bg').addEventListener('click',e=>{if(e.target===$('#modal-bg'))closeModal()});
+$('#m-save').addEventListener('click',()=>{
+  const company=$('#m-company').value.trim();
+  if(!company){alert('Company is required');return;}
+  const jd=$('#m-jd').value;
+  const base={
+    company, role:$('#m-role').value.trim(), status:$('#m-status').value,
+    date:$('#m-date').value, url:$('#m-url').value.trim(), notes:$('#m-notes').value.trim(),
+    jd, ...scoreApp(jd)
+  };
+  if(editId){const i=apps.findIndex(a=>a.id===editId); if(i>=0)apps[i]={...apps[i],...base};}
+  else{apps.unshift({id:uid(),...base});}
+  save(); closeModal(); render();
+});
+
+function render(){
+  const list=apps.filter(a=>filter==='All'||a.status===filter);
+  const tb=$('#rows'); tb.innerHTML='';
+  $('#empty').style.display=list.length?'none':'block';
+  list.forEach(a=>{
+    const tr=document.createElement('tr');
+    const m=a.match==null?'<span class="muted small">—</span>':`<span class="match ${matchClass(a.match)}">${a.match}%</span>`;
+    const roleCell=a.url?`<a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.role||'—')} ↗</a>`:esc(a.role||'—');
+    tr.innerHTML=`
+      <td><strong>${esc(a.company)}</strong>${a.notes?`<div class="small muted" style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(a.notes)}</div>`:''}</td>
+      <td>${roleCell}</td>
+      <td><select class="st-sel badge2 st-${esc(a.status)}" data-id="${a.id}">
+        ${['Saved','Applied','Interview','Offer','Rejected'].map(s=>`<option ${s===a.status?'selected':''}>${s}</option>`).join('')}
+      </select></td>
+      <td class="hide-sm small muted">${esc(a.date||'')}</td>
+      <td>${m}${a.missing&&a.missing.length?`<div class="hide-sm" style="margin-top:2px">${a.missing.slice(0,3).map(k=>`<span class="kw miss">${esc(k)}</span>`).join('')}</div>`:''}</td>
+      <td style="white-space:nowrap"><button class="iconbtn edit" data-id="${a.id}" title="Edit">✏️</button><button class="iconbtn del" data-id="${a.id}" title="Delete">🗑️</button></td>`;
+    tb.appendChild(tr);
+  });
+  $$('.st-sel').forEach(s=>s.addEventListener('change',e=>{
+    const a=apps.find(x=>x.id===e.target.dataset.id); if(a){a.status=e.target.value;save();render()}
+  }));
+  $$('.edit').forEach(b=>b.addEventListener('click',e=>{const a=apps.find(x=>x.id===e.target.dataset.id);openModal(a)}));
+  $$('.del').forEach(b=>b.addEventListener('click',e=>{
+    if(confirm('Delete this application?')){apps=apps.filter(x=>x.id!==e.target.dataset.id);save();render()}
+  }));
+  renderStats();
+}
+function renderStats(){
+  $('#s-total').textContent=apps.length;
+  $('#s-applied').textContent=apps.filter(a=>a.status==='Applied').length;
+  $('#s-interview').textContent=apps.filter(a=>a.status==='Interview').length;
+  $('#s-offer').textContent=apps.filter(a=>a.status==='Offer').length;
+  const scored=apps.filter(a=>typeof a.match==='number');
+  $('#s-avg').textContent=scored.length?Math.round(scored.reduce((s,a)=>s+a.match,0)/scored.length)+'%':'—';
+}
+$$('#filters .pill').forEach(p=>p.addEventListener('click',()=>{
+  $$('#filters .pill').forEach(x=>x.classList.remove('on'));
+  p.classList.add('on'); filter=p.dataset.f; render();
+}));
+
+// ---- CSV ----
+function csvCell(v){v=(v==null?'':String(v));return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
+$('#export').addEventListener('click',()=>{
+  const cols=['company','role','status','date','url','notes','match','missing'];
+  let out=cols.join(',')+'\n';
+  apps.forEach(a=>{out+=cols.map(c=>csvCell(c==='missing'?(a.missing||[]).join('; '):a[c])).join(',')+'\n';});
+  const blob=new Blob([out],{type:'text/csv'});
+  const u=URL.createObjectURL(blob);const link=document.createElement('a');
+  link.href=u;link.download='job-applications.csv';link.click();URL.revokeObjectURL(u);
+});
+$('#import-btn').addEventListener('click',()=>$('#import').click());
+$('#import').addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{try{importCSV(rd.result)}catch(err){alert('Could not parse CSV: '+err.message)}};
+  rd.readAsText(f); e.target.value='';
+});
+function parseCSV(text){
+  const rows=[];let row=[],cur='',q=false;
+  for(let i=0;i<text.length;i++){const c=text[i];
+    if(q){if(c==='"'){if(text[i+1]==='"'){cur+='"';i++}else q=false}else cur+=c}
+    else{if(c==='"')q=true;else if(c===','){row.push(cur);cur=''}
+      else if(c==='\n'){row.push(cur);rows.push(row);row=[];cur=''}
+      else if(c==='\r'){}else cur+=c}}
+  if(cur!==''||row.length){row.push(cur);rows.push(row)}
+  return rows.filter(r=>r.length&&r.some(x=>x!==''));
+}
+function importCSV(text){
+  const rows=parseCSV(text); if(!rows.length)return;
+  const head=rows[0].map(h=>h.trim().toLowerCase());
+  const idx=n=>head.indexOf(n);
+  let added=0;
+  for(let i=1;i<rows.length;i++){const r=rows[i];
+    const company=(r[idx('company')]||'').trim(); if(!company)continue;
+    const stat=(r[idx('status')]||'').trim();
+    apps.unshift({id:uid(),company,
+      role:(r[idx('role')]||'').trim(),
+      status:(['Saved','Applied','Interview','Offer','Rejected'].includes(stat)?stat:'Saved'),
+      date:(r[idx('date')]||'').trim(),
+      url:(r[idx('url')]||'').trim(),
+      notes:(r[idx('notes')]||'').trim(),
+      jd:'', match:(r[idx('match')]&&!isNaN(+r[idx('match')]))?+r[idx('match')]:null,
+      missing:(r[idx('missing')]||'').split(';').map(s=>s.trim()).filter(Boolean)
+    }); added++;
+  }
+  save();render();alert('Imported '+added+' application'+(added===1?'':'s')+'.');
+}
+
+refreshResumeState(); render();
+</script>
+</body>
+</html>
