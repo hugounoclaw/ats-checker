@@ -204,14 +204,36 @@ addExp();addExp();
 $('#add-exp').onclick=()=>{if(expList.children.length<6)addExp()};
 
 /* ---- JD keyword extraction (reuses tokens + STOP from score.js) ---- */
+// JD boilerplate that slips past the generic STOP set but reads as filler
+// in a cover letter ("we are looking for a candidate ...").
+const JD_FILLER=new Set(("looking seeking candidate candidates applicant applicants position role roles "+
+  "responsibilities responsibility requirements requirement required require preferred preferences "+
+  "qualifications qualification including include includes ability abilities experience experienced "+
+  "years year opportunity opportunities company companies team teams join joining hiring apply "+
+  "applying application looking ideal successful strong excellent great good working work job "+
+  "description seeking duties tasks based remote hybrid onsite full time part benefits salary "+
+  "competitive please email resume cover letter").split(/\s+/));
 function topKeywords(jd,n){
   if(!jd||jd.trim().length<40)return [];
-  const tk=tokens(jd).filter(w=>w.length>2 && !STOP.has(w));
+  // Tokens that appear Capitalized mid-sentence are usually real skills /
+  // proper nouns (Tableau, Looker, Snowflake, Python, SQL) rather than filler.
+  const capSet=new Set();
+  const raw=jd.match(/[A-Za-z][A-Za-z+#.\-]{1,}/g)||[];
+  raw.forEach((w,i)=>{
+    if(/^[A-Z]/.test(w)){
+      const prev=raw[i-1]||'';
+      const sentenceStart = i===0 || /[.!?:;]$/.test(prev) || prev==='';
+      // count ALL-CAPS (SQL, AWS) regardless; otherwise only mid-sentence caps
+      if(/^[A-Z0-9+#.\-]+$/.test(w) || !sentenceStart) capSet.add(w.toLowerCase().replace(/[.\-]+$/,''));
+    }
+  });
+  const tk=tokens(jd).filter(w=>w.length>2 && !STOP.has(w) && !JD_FILLER.has(w));
   const freq={};
   tk.forEach(w=>freq[w]=(freq[w]||0)+1);
-  let cand=[...new Set(tk)].filter(w=>freq[w]>=2 || w.length>=5);
-  // prefer skill-ish / capitalized-in-source terms by frequency
-  cand.sort((a,b)=>freq[b]-freq[a]);
+  let cand=[...new Set(tk)].filter(w=>freq[w]>=2 || w.length>=4);
+  const skillish=w=>/[.+#]/.test(w);   // node.js, c++, c#
+  const scoreOf=w=>freq[w] + (capSet.has(w)?5:0) + (skillish(w)?3:0) + (w.length>=7?1:0);
+  cand.sort((a,b)=>scoreOf(b)-scoreOf(a));
   return cand.slice(0,n);
 }
 let lastKw=[];
